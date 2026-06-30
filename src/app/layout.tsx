@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { AmbientBackdrop } from "@/components/AmbientBackdrop";
+import { ServiceWorker } from "@/components/ServiceWorker";
+import { Analytics } from "@/components/Analytics";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -53,6 +55,8 @@ export default function RootLayout({
       <body className="relative min-h-full">
         <AmbientBackdrop />
         <div className="relative z-10 min-h-full">{children}</div>
+        <ServiceWorker />
+        <Analytics />
       </body>
     </html>
   );

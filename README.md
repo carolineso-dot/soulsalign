@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Souls Align
 
-## Getting Started
+> For those who'd rather meet one worthy soul than a hundred strangers.
 
-First, run the development server:
+A premium dating & meaningful-connection web app that lets **the universe do the
+screening** — matching people on who they innately are via a destiny-based
+compatibility engine (Chinese Ba Zi, Western astrology, Chinese zodiac) rather
+than augmented profiles. Structured, not mystical — a considered reading, never a
+prophecy.
+
+## Stack
+
+- **Next.js 16** (App Router, React 19, TypeScript) + **Tailwind CSS v4**
+- **Prisma** ORM — SQLite locally, **Supabase Postgres** in production
+- **Owned auth** — email/password, hashed (bcrypt), JWT session cookies (jose)
+- **Storage adapter** — local disk in dev, **Supabase Storage** in production
+- **Anthropic API** — in-character AI chat for seeded profiles (server-side only)
+- **Real ephemeris** — `circular-natal-horoscope-js` for genuine sun/moon/rising
+- Installable **PWA** (manifest, icons, service worker); **PostHog** analytics
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run db:reset     # SQLite schema + migrations
+npm run db:seed      # 21 demo souls (committed portrait assets)
+npm run dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Demo logins use password `souls-demo-1234` — e.g. `seraphina@souls.demo`,
+`adrian@souls.demo`, `kai@souls.demo`. Or create a fresh account to walk the full
+onboarding + astrology flow.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## The matching engine
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+A 0–100 alignment score, blended ~34/33/33 and clamped to 70–99, then mapped to a
+tier (**Destined / Kindred / Attuned / Spark**). Gender + connection preferences
+gate **before** scoring. See `src/lib/` (`bazi.ts`, `astrology.ts`, `zodiac.ts`,
+`matching.ts`, `tiers.ts`) and the in-app **Our Method** page.
 
-## Learn More
+## Project layout
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/            screens + route handlers (auth, onboarding, discover,
+                  profile, match, chat, you, plans, method, safety, api/*)
+  components/     orbit emblem, score ring, tier badge, avatar (w/ fallback)…
+  lib/            destiny engine, auth, db, storage, ephemeris, discovery, chat
+prisma/           schema, migrations, seed (+ portrait generator)
+public/           icons, manifest, sw.js, seed/ portraits
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for the local-first → Supabase + Vercel +
+Anthropic + PostHog switch (env vars + one Prisma provider line).
 
-## Deploy on Vercel
+## Notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Keep `ANTHROPIC_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` server-side only.
+- Birth details lock permanently after verification (they anchor every alignment).
+- Monetization is depth/accuracy/privacy only — never visibility or boosts.
