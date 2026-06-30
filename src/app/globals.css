@@ -1,26 +1,215 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------ */
+/*  Souls Align — design tokens                                        */
+/*  Editorial, luxury, restrained. Never bubbly.                       */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* Brand palette */
+  --color-ivory: #fbf9f5; /* primary surface */
+  --color-grad-from: #efe9e0; /* page gradient start */
+  --color-grad-to: #e9e3f0; /* page gradient end */
+  --color-ink: #23201b; /* primary text */
+  --color-clay: #8c857a; /* muted labels */
+  --color-claret: #7e3340; /* primary accent / romance / Kindred */
+  --color-claret-soft: #a45562;
+  --color-gold: #a8843b; /* Destined tier + glowing core */
+  --color-gold-soft: #c9a85f;
+  --color-hairline: #e7e0d4; /* borders */
+  --color-aubergine: #2f2535; /* icon tile */
+  --color-slate: #4e4a63; /* Attuned tier */
+  --color-sage: #5f7268; /* Spark tier */
+
+  /* Typography */
+  --font-serif: var(--font-cormorant), "EB Garamond", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Radii */
+  --radius-card: 1.25rem;
+  --radius-tile: 1.5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  background-color: var(--color-ivory);
+  background-image: linear-gradient(
+    160deg,
+    var(--color-grad-from) 0%,
+    var(--color-ivory) 45%,
+    var(--color-grad-to) 100%
+  );
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Section labels: uppercase, letter-spaced, muted clay */
+.label-eyebrow {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-clay);
+}
+
+/* Wordmark: tracked serif caps */
+.wordmark {
+  font-family: var(--font-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-weight: 500;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Cards */
+.card {
+  background: color-mix(in srgb, var(--color-ivory) 92%, white);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 1px 2px rgba(35, 32, 27, 0.03),
+    0 12px 32px -20px rgba(35, 32, 27, 0.18);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease,
+    background-color 0.18s ease;
+  cursor: pointer;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--color-claret);
+  color: var(--color-ivory);
+}
+.btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-claret) 88%, black);
+}
+.btn-gold {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-ivory) 50%, white);
+}
+
+/* Inputs */
+.field {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--color-hairline);
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--color-claret);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-claret) 14%, transparent);
+}
+.field::placeholder {
+  color: color-mix(in srgb, var(--color-clay) 80%, transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Orbit motif animations                                            */
+/* ------------------------------------------------------------------ */
+
+@keyframes orbit-cw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes orbit-ccw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes core-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-spin-cw,
+  .orbit-spin-ccw,
+  .orbit-core,
+  .orbit-star {
+    animation: none !important;
+  }
 }
