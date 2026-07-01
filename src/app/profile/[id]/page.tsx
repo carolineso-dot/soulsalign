@@ -7,6 +7,7 @@ import { ScoreRing } from "@/components/ScoreRing";
 import { TierBadge } from "@/components/TierBadge";
 import { SignalBar } from "@/components/SignalBar";
 import { RadarChart } from "@/components/RadarChart";
+import { AlignmentStory } from "@/components/AlignmentStory";
 import { ExpressInterest } from "@/components/ExpressInterest";
 import { ReportDialog } from "@/components/ReportDialog";
 import { TestChatButton } from "@/components/TestChatButton";
@@ -98,9 +99,9 @@ export default async function ProfilePage({
           </div>
         </div>
 
-        {/* the three pillars */}
+        {/* the three cosmic pillars */}
         <div className="mt-6">
-          <p className="label-eyebrow">The three pillars</p>
+          <p className="label-eyebrow">The Three Cosmic Pillars</p>
           <div className="mt-4 space-y-4">
             {alignment.breakdown.map((b) => (
               <SignalBar key={b.label} label={b.label} detail={b.detail} score={b.score} color={b.color} />
@@ -119,6 +120,9 @@ export default async function ProfilePage({
             />
           </div>
         </div>
+
+        {/* personal narrative — why these two align, beyond the numbers */}
+        <AlignmentStory targetId={view.id} />
       </section>
 
       {/* about */}
