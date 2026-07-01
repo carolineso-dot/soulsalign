@@ -6,6 +6,7 @@ import { PhotoGallery } from "@/components/PhotoGallery";
 import { ScoreRing } from "@/components/ScoreRing";
 import { TierBadge } from "@/components/TierBadge";
 import { SignalBar } from "@/components/SignalBar";
+import { RadarChart } from "@/components/RadarChart";
 import { ExpressInterest } from "@/components/ExpressInterest";
 import { ReportDialog } from "@/components/ReportDialog";
 import { TestChatButton } from "@/components/TestChatButton";
@@ -77,7 +78,7 @@ export default async function ProfilePage({
         <Trio glyph={view.zodiacAnimal ? animalGlyph(view.zodiacAnimal as never) : "生"} label="Zodiac" value={view.zodiacAnimal ?? "—"} />
       </div>
 
-      {/* compatibility — overall + five dimensions */}
+      {/* compatibility — overall score first */}
       <section className="mt-6 card p-5">
         <div className="flex items-center justify-between">
           <p className="label-eyebrow">Compatibility</p>
@@ -85,29 +86,38 @@ export default async function ProfilePage({
             Understand our method
           </Link>
         </div>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="font-serif text-3xl" style={{ color: alignment.tier.color }}>
-            {alignment.score}
-          </span>
-          <span className="text-sm text-clay">overall · {alignment.tier.name}</span>
+        <div className="mt-3 flex items-center gap-4">
+          <ScoreRing score={alignment.score} size={72} />
+          <div>
+            <div className="font-serif text-lg text-ink">
+              {alignment.tier.name}
+            </div>
+            <p className="mt-0.5 text-sm leading-snug text-clay">
+              {alignment.tier.note}
+            </p>
+          </div>
         </div>
-        <p className="mt-1 font-serif text-base leading-snug text-clay">
-          {alignment.tier.note}
-        </p>
-        <div className="mt-5 space-y-4">
-          {alignment.dimensions.map((d) => (
-            <SignalBar key={d.key} label={`${d.label} compatibility`} detail={d.detail} score={d.score} color={d.color} />
-          ))}
-        </div>
-      </section>
 
-      {/* the three signals behind the reading */}
-      <section className="mt-4 rounded-2xl border border-hairline bg-white/40 p-5">
-        <p className="label-eyebrow">The signals behind it</p>
-        <div className="mt-4 space-y-4">
-          {alignment.breakdown.map((b) => (
-            <SignalBar key={b.label} label={b.label} detail={b.detail} score={b.score} color={b.color} />
-          ))}
+        {/* the three pillars */}
+        <div className="mt-6">
+          <p className="label-eyebrow">The three pillars</p>
+          <div className="mt-4 space-y-4">
+            {alignment.breakdown.map((b) => (
+              <SignalBar key={b.label} label={b.label} detail={b.detail} score={b.score} color={b.color} />
+            ))}
+          </div>
+        </div>
+
+        {/* five-dimension star */}
+        <div className="mt-6 border-t border-hairline pt-5">
+          <p className="label-eyebrow text-center">Five dimensions of compatibility</p>
+          <div className="mt-3">
+            <RadarChart
+              dimensions={alignment.dimensions}
+              overall={alignment.score}
+              tierColor={alignment.tier.color}
+            />
+          </div>
         </div>
       </section>
 

@@ -79,14 +79,14 @@ function genderCategory(g: Gender): "women" | "men" | "nonbinary" {
   return g === "woman" ? "women" : g === "man" ? "men" : "nonbinary";
 }
 
-/** Does `viewer` find `candidate`'s gender acceptable? */
+/**
+ * Does `viewer` find `candidate`'s gender acceptable? Strict:
+ *   "everyone" → any gender; "women" → women only; "men" → men only.
+ * Non-binary members are therefore only surfaced to viewers open to everyone.
+ */
 function openTo(interestedIn: InterestedIn, candidate: Gender): boolean {
   if (interestedIn === "everyone") return true;
-  const cat = genderCategory(candidate);
-  // Non-binary members surface for everyone (inclusive default); women/men
-  // gates apply to the binary categories.
-  if (cat === "nonbinary") return true;
-  return interestedIn === cat;
+  return interestedIn === genderCategory(candidate);
 }
 
 /**
@@ -162,10 +162,10 @@ const DIMENSION_META: {
   color: string;
 }[] = [
   { key: "cerebral", label: "Cerebral", color: "#4e4a63" },
+  { key: "emotions", label: "Emotional", color: "#a45562" },
   { key: "sexual", label: "Sexual", color: "#7e3340" },
-  { key: "lifestyle", label: "Lifestyle", color: "#a8843b" },
   { key: "personality", label: "Personality", color: "#5f7268" },
-  { key: "emotions", label: "Emotions", color: "#a45562" },
+  { key: "lifestyle", label: "Lifestyle", color: "#a8843b" },
 ];
 
 function dimDetail(key: DimensionKey, score: number): string {
