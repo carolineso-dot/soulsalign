@@ -27,13 +27,10 @@ export function CropModal({
   const [zoom, setZoom] = useState(initialCrop?.zoom ?? 1);
   const [area, setArea] = useState<Area | null>(null);
 
-  const onCropComplete = useCallback(
-    (_percent: Area, _pixels: Area) => {
-      // We persist the PERCENT area (resolution-independent).
-      setArea(_percent);
-    },
-    [],
-  );
+  const onCropComplete = useCallback((percent: Area) => {
+    // We persist the PERCENT area (resolution-independent).
+    setArea(percent);
+  }, []);
 
   const confirm = () => {
     const a = area ??

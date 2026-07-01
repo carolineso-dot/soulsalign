@@ -26,18 +26,20 @@ type ProfileImageProps =
  *  - shape="frame": a portrait aspect box; the crop rect is reproduced exactly.
  *  - shape="circle": a round avatar; the crop's focal point is centred (cover).
  */
-export function ProfileImage(props: ProfileImageProps) {
-  const { src, name, crop, className = "" } = props;
-  const [failed, setFailed] = useState(false);
-  const initial = (name.trim()[0] ?? "?").toUpperCase();
-  const showImg = src && !failed;
+const GRADIENT = "linear-gradient(140deg, #2f2535 0%, #7e3340 120%)";
 
-  const gradient = "linear-gradient(140deg, #2f2535 0%, #7e3340 120%)";
-
-  const Fallback = ({ fontSize }: { fontSize: number | string }) => (
+/** Duotone initial fallback — module-level so it isn't recreated each render. */
+function Fallback({
+  initial,
+  fontSize,
+}: {
+  initial: string;
+  fontSize: number | string;
+}) {
+  return (
     <div
       className="flex h-full w-full items-center justify-center"
-      style={{ background: gradient }}
+      style={{ background: GRADIENT }}
     >
       <span
         className="font-serif font-medium text-ivory"
@@ -47,6 +49,15 @@ export function ProfileImage(props: ProfileImageProps) {
       </span>
     </div>
   );
+}
+
+export function ProfileImage(props: ProfileImageProps) {
+  const { src, name, crop, className = "" } = props;
+  const [failed, setFailed] = useState(false);
+  const initial = (name.trim()[0] ?? "?").toUpperCase();
+  const showImg = src && !failed;
+
+  const gradient = GRADIENT;
 
   if (props.shape === "circle") {
     const size = props.size;
@@ -65,7 +76,7 @@ export function ProfileImage(props: ProfileImageProps) {
             style={{ objectPosition: focalObjectPosition(crop ?? null) }}
           />
         ) : (
-          <Fallback fontSize={size * 0.42} />
+          <Fallback initial={initial} fontSize={size * 0.42} />
         )}
       </div>
     );
@@ -94,7 +105,7 @@ export function ProfileImage(props: ProfileImageProps) {
           style={crop ? frameImageStyle(crop) : undefined}
         />
       ) : (
-        <Fallback fontSize="42cqw" />
+        <Fallback initial={initial} fontSize="42cqw" />
       )}
     </div>
   );
