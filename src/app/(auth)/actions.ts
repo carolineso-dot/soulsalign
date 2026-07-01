@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { createSession, hashPassword, verifyPassword } from "@/lib/auth";
+import { autoGrantTestMatches } from "@/app/actions/test";
 
 export type AuthState = { error?: string };
 
@@ -34,6 +35,8 @@ export async function signUpAction(
     data: { email, passwordHash: await hashPassword(password) },
   });
   await createSession(user.id);
+  // Test mode only: no-op in production.
+  await autoGrantTestMatches(user.id);
   redirect("/transition");
 }
 
@@ -56,5 +59,7 @@ export async function signInAction(
   }
 
   await createSession(user.id);
+  // Test mode only: no-op in production.
+  await autoGrantTestMatches(user.id);
   redirect("/transition");
 }

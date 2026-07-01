@@ -9,6 +9,7 @@ import { elementFromYear } from "@/lib/bazi";
 import { animalFromYear } from "@/lib/zodiac";
 import { lookupPlace } from "@/lib/geo";
 import { ageFromDob } from "@/lib/profile";
+import { autoGrantTestMatches } from "@/app/actions/test";
 
 export type OnboardingState = { error?: string };
 
@@ -117,6 +118,9 @@ export async function completeOnboarding(
       onboardingComplete: true,
     },
   });
+
+  // Test mode only: no-op in production.
+  await autoGrantTestMatches(userId);
 
   redirect("/discover");
 }

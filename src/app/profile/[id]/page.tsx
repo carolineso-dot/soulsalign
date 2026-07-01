@@ -8,6 +8,8 @@ import { TierBadge } from "@/components/TierBadge";
 import { SignalBar } from "@/components/SignalBar";
 import { ExpressInterest } from "@/components/ExpressInterest";
 import { ReportDialog } from "@/components/ReportDialog";
+import { TestChatButton } from "@/components/TestChatButton";
+import { testModeEnabled } from "@/lib/testMode";
 import { animalGlyph } from "@/lib/zodiac";
 import { elementGlyph } from "@/lib/bazi";
 import { signGlyph } from "@/lib/astrology";
@@ -26,7 +28,9 @@ export default async function ProfilePage({
   if (!view) notFound();
 
   // Free viewers cannot open a Destined profile — guide them to Aligned+.
-  if (view.lockedForFree) redirect("/plans");
+  // (Test mode bypasses this so any seed profile is reachable for chat testing.)
+  const testMode = testModeEnabled();
+  if (view.lockedForFree && !testMode) redirect("/plans");
 
   const { alignment } = view;
 
@@ -118,13 +122,14 @@ export default async function ProfilePage({
       )}
 
       {/* express interest (fixed footer) */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-hairline bg-ivory/90 px-5 py-3 backdrop-blur">
-        <div className="mx-auto max-w-md">
+      <div className="fixed inset-x-0 bottom-0 z-30 space-y-2 border-t border-hairline bg-ivory/90 px-5 py-3 backdrop-blur">
+        <div className="mx-auto max-w-md space-y-2">
           <ExpressInterest
             targetId={view.id}
             initialSent={view.hasSentInterest}
             initialMatched={view.isMutual}
           />
+          {testMode && !view.isMutual && <TestChatButton targetId={view.id} />}
         </div>
       </div>
     </div>
