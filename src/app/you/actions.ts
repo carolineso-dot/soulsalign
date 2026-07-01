@@ -24,6 +24,7 @@ const schema = z.object({
   interestedIn: z.enum(["women", "men", "everyone"]),
   connection: z.enum(["romance", "friendship", "both"]),
   incognito: z.string().optional(),
+  location: z.string().optional(),
   // birth fields (only honoured pre-verification)
   dob: z.string().optional(),
   birthTime: z.string().optional(),
@@ -50,6 +51,7 @@ export async function updateProfile(
     interestedIn: formData.get("interestedIn"),
     connection: formData.get("connection"),
     incognito: formData.get("incognito")?.toString(),
+    location: String(formData.get("location") ?? "").trim(),
     dob: String(formData.get("dob") ?? ""),
     birthTime: String(formData.get("birthTime") ?? ""),
     birthPlace: String(formData.get("birthPlace") ?? "").trim(),
@@ -78,6 +80,20 @@ export async function updateProfile(
     connection: d.connection,
     incognito: d.incognito === "yes",
   };
+
+  // Current location — editable anytime (not tied to the birth-details lock).
+  if (d.location !== undefined) {
+    if (d.location) {
+      const loc = lookupPlace(d.location);
+      data.locationLabel = loc?.label ?? d.location;
+      data.locationLat = loc?.lat ?? null;
+      data.locationLon = loc?.lon ?? null;
+    } else {
+      data.locationLabel = null;
+      data.locationLat = null;
+      data.locationLon = null;
+    }
+  }
 
   // Birth details are editable ONLY before verification. After verification
   // they are permanently locked to protect the integrity of every alignment.

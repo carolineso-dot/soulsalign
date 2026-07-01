@@ -35,6 +35,12 @@ model User {
   birthLat    Float?
   birthLon    Float?
 
+  // Current/residential location (for proximity matching; editable anytime,
+  // distinct from birth place which anchors the astrology and locks).
+  locationLabel String?
+  locationLat   Float?
+  locationLon   Float?
+
   // Preferences & gating
   gender       String? // woman | man | nonbinary
   interestedIn String? // women | men | everyone

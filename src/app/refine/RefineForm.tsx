@@ -3,14 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PillSelect } from "@/components/PillSelect";
+import { cityOptions } from "@/lib/geo";
 
-export function RefineForm() {
+export function RefineForm({ homeLocation }: { homeLocation: string | null }) {
   const router = useRouter();
   const [connection, setConnection] = useState("both");
   const [minAge, setMinAge] = useState(18);
   const [maxAge, setMaxAge] = useState(70);
   const [minHeight, setMinHeight] = useState(150);
   const [maxHeight, setMaxHeight] = useState(200);
+
+  // Proximity
+  const [near, setNear] = useState("");
+  const [anywhere, setAnywhere] = useState(true);
+  const [maxKm, setMaxKm] = useState(100);
 
   const apply = () => {
     const p = new URLSearchParams();
@@ -19,6 +25,8 @@ export function RefineForm() {
     if (maxAge !== 70) p.set("maxAge", String(maxAge));
     if (minHeight !== 150) p.set("minHeight", String(minHeight));
     if (maxHeight !== 200) p.set("maxHeight", String(maxHeight));
+    if (near.trim()) p.set("near", near.trim());
+    if (!anywhere) p.set("maxKm", String(maxKm));
     router.push(`/discover${p.toString() ? `?${p}` : ""}`);
   };
 
@@ -36,6 +44,57 @@ export function RefineForm() {
             { value: "friendship", label: "Friendship" },
           ]}
         />
+      </section>
+
+      {/* Location + proximity */}
+      <section className="space-y-4 rounded-2xl border border-hairline bg-white/40 p-4">
+        <div className="space-y-2">
+          <span className="label-eyebrow block">Location</span>
+          <input
+            list="refine-cities"
+            value={near}
+            onChange={(e) => setNear(e.target.value)}
+            className="field"
+            placeholder={homeLocation ? `Near ${homeLocation}` : "Search a city"}
+          />
+          <datalist id="refine-cities">
+            {cityOptions().map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+          <p className="text-xs text-clay">
+            {homeLocation
+              ? "Leave blank to search around your own location."
+              : "Set your location in your profile to search around you."}
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="label-eyebrow">Proximity</span>
+            <span className="text-sm text-ink">
+              {anywhere ? "Anywhere" : `Within ${maxKm} km`}
+            </span>
+          </div>
+          <input
+            type="range"
+            min={5}
+            max={500}
+            step={5}
+            value={maxKm}
+            disabled={anywhere}
+            onChange={(e) => setMaxKm(Number(e.target.value))}
+            className="w-full accent-claret disabled:opacity-40"
+          />
+          <label className="flex items-center gap-2 text-sm text-ink">
+            <input
+              type="checkbox"
+              checked={anywhere}
+              onChange={(e) => setAnywhere(e.target.checked)}
+            />
+            Search anywhere (no distance limit)
+          </label>
+        </div>
       </section>
 
       <RangeRow

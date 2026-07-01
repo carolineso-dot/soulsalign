@@ -48,6 +48,23 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
         </p>
       </section>
 
+      {/* Current location */}
+      <section className="space-y-2">
+        <label htmlFor="location" className="label-eyebrow block">
+          Where you live
+        </label>
+        <input
+          id="location"
+          name="location"
+          list="cities"
+          className="field"
+          placeholder="Your city"
+        />
+        <p className="text-xs text-clay">
+          Used to find souls near you. You can change this anytime.
+        </p>
+      </section>
+
       {/* Birth time + place (optional) */}
       <section className="space-y-3">
         <div className="space-y-2">

@@ -19,7 +19,7 @@ export default async function RefinePage() {
       </header>
 
       <div className="mt-8">
-        <RefineForm />
+        <RefineForm homeLocation={user.locationLabel ?? null} />
       </div>
     </AppShell>
   );

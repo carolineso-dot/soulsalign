@@ -20,6 +20,7 @@ type Initial = {
   gender: string;
   interestedIn: string;
   connection: string;
+  location: string;
   incognito: boolean;
   dob: string; // yyyy-mm-dd
   birthTime: string; // HH:MM
@@ -74,6 +75,14 @@ export function EditForm({
         <section className="space-y-2">
           <label htmlFor="height" className="label-eyebrow block">Height · cm</label>
           <input id="height" name="height" type="number" min={120} max={230} defaultValue={initial.height} className="field" />
+        </section>
+
+        <section className="space-y-2">
+          <label htmlFor="location" className="label-eyebrow block">Where you live</label>
+          <input id="location" name="location" list="cities-loc" defaultValue={initial.location} className="field" placeholder="Your city" />
+          <datalist id="cities-loc">
+            {cityOptions().map((c) => <option key={c} value={c} />)}
+          </datalist>
         </section>
 
         <section className="space-y-2">

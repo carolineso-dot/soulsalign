@@ -18,6 +18,7 @@ const schema = z.object({
   dob: z.string().min(1, "Your date of birth is required."),
   birthTime: z.string().optional(),
   birthPlace: z.string().optional(),
+  location: z.string().optional(),
   gender: z.enum(["woman", "man", "nonbinary"]),
   interestedIn: z.enum(["women", "men", "everyone"]),
   connection: z.enum(["romance", "friendship", "both"]),
@@ -37,6 +38,7 @@ export async function completeOnboarding(
     dob: String(formData.get("dob") ?? ""),
     birthTime: String(formData.get("birthTime") ?? ""),
     birthPlace: String(formData.get("birthPlace") ?? "").trim(),
+    location: String(formData.get("location") ?? "").trim(),
     gender: formData.get("gender"),
     interestedIn: formData.get("interestedIn"),
     connection: formData.get("connection"),
@@ -85,6 +87,17 @@ export async function completeOnboarding(
     }
   }
 
+  // Current/residential location for proximity matching.
+  let locationLabel: string | null = null;
+  let locationLat: number | null = null;
+  let locationLon: number | null = null;
+  if (d.location) {
+    const loc = lookupPlace(d.location);
+    locationLabel = loc?.label ?? d.location;
+    locationLat = loc?.lat ?? null;
+    locationLon = loc?.lon ?? null;
+  }
+
   const year = dob.getFullYear();
   const chart = await computeChart({
     year,
@@ -109,6 +122,9 @@ export async function completeOnboarding(
       gender: d.gender,
       interestedIn: d.interestedIn,
       connection: d.connection,
+      locationLabel,
+      locationLat,
+      locationLon,
       sunSign: chart.sun,
       moonSign: chart.moon,
       risingSign: chart.rising,

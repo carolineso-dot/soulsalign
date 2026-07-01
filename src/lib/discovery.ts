@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "./db";
 import { hasPlus } from "./plans";
+import { haversineKm, lookupPlace } from "./geo";
 import {
   Alignment,
   computeAlignment,
@@ -22,6 +23,8 @@ export type MatchCard = {
   tierKey: TierKey;
   tierName: string;
   tierColor: string;
+  /** Distance from the search centre in km, when a location is known. */
+  distanceKm: number | null;
   /** True when this Destined match is gated behind Aligned+ for a free viewer. */
   locked: boolean;
 };
@@ -32,6 +35,10 @@ export type RefineFilters = {
   maxAge?: number;
   minHeight?: number;
   maxHeight?: number;
+  /** A city to search around; falls back to the viewer's own location. */
+  near?: string;
+  /** Max distance (km) from the search centre. Undefined = anywhere. */
+  maxKm?: number;
 };
 
 const FREE_VISIBLE_LIMIT = 8;
@@ -48,6 +55,8 @@ type ViewerLike = {
   moonSign: string | null;
   risingSign: string | null;
   sunElement: string | null;
+  locationLat: number | null;
+  locationLon: number | null;
 };
 
 /**
@@ -62,6 +71,17 @@ export async function getCuratedMatches(
   if (!viewerProfile) return [];
 
   const plus = hasPlus(viewer.plan);
+
+  // Resolve the proximity search centre: an explicit "near" city if given,
+  // otherwise the viewer's own saved location.
+  let center: { lat: number; lon: number } | null = null;
+  if (filters.near) {
+    const geo = lookupPlace(filters.near);
+    if (geo) center = { lat: geo.lat, lon: geo.lon };
+  }
+  if (!center && viewer.locationLat != null && viewer.locationLon != null) {
+    center = { lat: viewer.locationLat, lon: viewer.locationLon };
+  }
 
   // Everyone the viewer has blocked, or who has blocked the viewer, is excluded.
   const blocks = await prisma.block.findMany({
@@ -113,6 +133,18 @@ export async function getCuratedMatches(
       if (filters.maxHeight && c.heightCm > filters.maxHeight) continue;
     }
 
+    // Proximity: distance from the search centre, and radius filtering.
+    let distanceKm: number | null = null;
+    if (center && c.locationLat != null && c.locationLon != null) {
+      distanceKm = Math.round(
+        haversineKm(center.lat, center.lon, c.locationLat, c.locationLon),
+      );
+    }
+    if (filters.maxKm != null) {
+      // With a radius set, require a known location within it.
+      if (distanceKm == null || distanceKm > filters.maxKm) continue;
+    }
+
     const alignment: Alignment = computeAlignment(
       viewerProfile,
       candProfile,
@@ -132,6 +164,7 @@ export async function getCuratedMatches(
       tierKey: alignment.tier.key,
       tierName: alignment.tier.name,
       tierColor: alignment.tier.color,
+      distanceKm,
       locked: isDestined && !plus,
     });
   }

@@ -14,6 +14,7 @@ export type MatchCardData = {
   verified: boolean;
   score: number;
   tierKey: TierKey;
+  distanceKm: number | null;
   locked: boolean;
 };
 
@@ -78,6 +79,15 @@ export function MatchCard({ data }: { data: MatchCardData }) {
         </div>
         {data.essence && (
           <p className="text-sm leading-snug text-clay">{data.essence}</p>
+        )}
+        {data.distanceKm != null && (
+          <p className="flex items-center gap-1 pt-0.5 text-xs text-clay">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+              <path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z" />
+              <circle cx="12" cy="10" r="2.4" />
+            </svg>
+            {data.distanceKm === 0 ? "Nearby" : `~${data.distanceKm} km away`}
+          </p>
         )}
       </div>
     </article>

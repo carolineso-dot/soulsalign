@@ -304,6 +304,10 @@ async function main() {
         gender: s.gender,
         interestedIn: s.interestedIn,
         connection: s.connection,
+        // Current location for proximity matching (demo: their home city).
+        locationLabel: geo?.label ?? s.place ?? null,
+        locationLat: geo?.lat ?? null,
+        locationLon: geo?.lon ?? null,
         sunSign: chart.sun,
         moonSign: chart.moon,
         risingSign: chart.rising,

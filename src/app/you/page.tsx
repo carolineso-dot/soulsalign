@@ -112,6 +112,7 @@ export default async function YouPage() {
         <Row k="I am" v={genderLabel(user.gender)} />
         <Row k="Interested in" v={interestedInLabel(user.interestedIn)} />
         <Row k="Seeking" v={connectionLabel(user.connection)} />
+        <Row k="Location" v={user.locationLabel ?? "Not set"} />
       </section>
 
       {/* about */}

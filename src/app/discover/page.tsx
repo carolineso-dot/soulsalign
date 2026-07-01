@@ -12,6 +12,8 @@ type SearchParams = Promise<{
   maxAge?: string;
   minHeight?: string;
   maxHeight?: string;
+  near?: string;
+  maxKm?: string;
 }>;
 
 function num(v: string | undefined): number | undefined {
@@ -42,6 +44,8 @@ export default async function DiscoverPage({
     maxAge: num(sp.maxAge),
     minHeight: num(sp.minHeight),
     maxHeight: num(sp.maxHeight),
+    near: sp.near || undefined,
+    maxKm: num(sp.maxKm),
   };
   const hasFilters = Object.values(filters).some((v) => v !== undefined);
 

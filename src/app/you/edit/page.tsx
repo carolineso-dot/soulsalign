@@ -48,6 +48,7 @@ export default async function EditProfilePage() {
             gender: user.gender ?? "woman",
             interestedIn: user.interestedIn ?? "everyone",
             connection: user.connection ?? "both",
+            location: user.locationLabel ?? "",
             incognito: user.incognito,
             dob: toDateInput(user.dob),
             birthTime,
