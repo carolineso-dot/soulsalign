@@ -27,7 +27,9 @@ export default async function ChatThreadPage({
 
   const other = await prisma.user.findUnique({
     where: { id },
-    include: { photos: { where: { isPrimary: true }, take: 1 } },
+    include: {
+      photos: { orderBy: [{ isPrimary: "desc" }, { sort: "asc" }], take: 1 },
+    },
   });
   if (!other) redirect("/chat");
 
@@ -42,6 +44,7 @@ export default async function ChatThreadPage({
       otherId={other.id}
       otherName={other.name ?? "Someone"}
       otherPhoto={other.photos[0]?.url ?? null}
+      otherCrop={other.photos[0]?.crop ?? null}
       tierName={alignment?.tier.name ?? "Aligned"}
       tierColor={alignment?.tier.color ?? "#8c857a"}
       initialMessages={messages}

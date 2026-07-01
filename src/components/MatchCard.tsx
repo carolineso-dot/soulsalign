@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Avatar } from "./Avatar";
+import { ProfileImage } from "./ProfileImage";
 import { ScoreRing } from "./ScoreRing";
 import { tierByKey, TierKey } from "@/lib/tiers";
+import { parseCrop } from "@/lib/crop";
 
 export type MatchCardData = {
   id: string;
@@ -9,6 +10,7 @@ export type MatchCardData = {
   age: number | null;
   essence: string | null;
   photoUrl: string | null;
+  photoCrop: string | null;
   verified: boolean;
   score: number;
   tierKey: TierKey;
@@ -22,12 +24,13 @@ export function MatchCard({ data }: { data: MatchCardData }) {
     <article className="card overflow-hidden">
       <div className="relative">
         <div className={data.locked ? "blur-md" : ""}>
-          <Avatar
+          <ProfileImage
             src={data.photoUrl}
             name={data.name}
-            size={9999}
-            rounded="card"
-            className="!h-64 !w-full !rounded-none"
+            crop={parseCrop(data.photoCrop)}
+            shape="frame"
+            className="w-full"
+            rounded="0"
           />
         </div>
 

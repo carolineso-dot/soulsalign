@@ -146,6 +146,29 @@ function keyFromUrl(url: string): string {
   return url.split("/").pop() ?? "";
 }
 
+/** Re-crop an existing photo from its saved original — no re-upload needed. */
+export async function updatePhotoCrop(photoId: string, cropJson: string) {
+  const userId = await getUserId();
+  if (!userId) return { ok: false };
+  const photo = await prisma.photo.findUnique({ where: { id: photoId } });
+  if (!photo || photo.userId !== userId) return { ok: false };
+
+  let normalized: string | null = null;
+  try {
+    const c = JSON.parse(cropJson);
+    if (["x", "y", "width", "height"].every((k) => typeof c[k] === "number")) {
+      normalized = JSON.stringify(c);
+    }
+  } catch {
+    return { ok: false };
+  }
+
+  await prisma.photo.update({ where: { id: photoId }, data: { crop: normalized } });
+  revalidatePath("/you");
+  revalidatePath("/you/edit");
+  return { ok: true };
+}
+
 export async function deletePhoto(photoId: string) {
   const userId = await getUserId();
   if (!userId) return;
@@ -153,6 +176,7 @@ export async function deletePhoto(photoId: string) {
   if (!photo || photo.userId !== userId) return;
 
   await deleteImage(keyFromUrl(photo.url));
+  if (photo.originalUrl) await deleteImage(keyFromUrl(photo.originalUrl));
   await prisma.photo.delete({ where: { id: photoId } });
 
   // If we removed the primary, promote the next one.

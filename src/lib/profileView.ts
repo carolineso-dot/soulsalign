@@ -12,7 +12,7 @@ export type ProfileView = {
   essence: string | null;
   bio: string | null;
   interests: string[];
-  photos: string[];
+  photos: { url: string; crop: string | null }[];
   heightCm: number | null;
   verified: boolean;
   sunSign: string | null;
@@ -91,7 +91,7 @@ export async function getProfileView(
     essence: target.essence,
     bio: target.bio,
     interests: parseInterests(target.interests),
-    photos: target.photos.map((p) => p.url),
+    photos: target.photos.map((p) => ({ url: p.url, crop: p.crop })),
     heightCm: target.heightCm,
     verified: target.verified,
     sunSign: target.sunSign,

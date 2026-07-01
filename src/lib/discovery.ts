@@ -16,6 +16,7 @@ export type MatchCard = {
   age: number | null;
   essence: string | null;
   photoUrl: string | null;
+  photoCrop: string | null;
   verified: boolean;
   score: number;
   tierKey: TierKey;
@@ -125,6 +126,7 @@ export async function getCuratedMatches(
       age,
       essence: c.essence,
       photoUrl: c.photos[0]?.url ?? null,
+      photoCrop: c.photos[0]?.crop ?? null,
       verified: c.verified,
       score: alignment.score,
       tierKey: alignment.tier.key,

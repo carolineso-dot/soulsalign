@@ -29,6 +29,7 @@ export type ConversationSummary = {
   id: string;
   name: string;
   photoUrl: string | null;
+  photoCrop: string | null;
   lastMessage: string | null;
   tierName: string;
   tierColor: string;
@@ -63,7 +64,9 @@ export async function getConversations(
 
   const others = await prisma.user.findMany({
     where: { id: { in: mutualIds.filter((id) => !blocked.has(id)) } },
-    include: { photos: { where: { isPrimary: true }, take: 1 } },
+    include: {
+      photos: { orderBy: [{ isPrimary: "desc" }, { sort: "asc" }], take: 1 },
+    },
   });
 
   const summaries: { s: ConversationSummary; at: number }[] = [];
@@ -80,6 +83,7 @@ export async function getConversations(
         id: o.id,
         name: o.name ?? "Someone",
         photoUrl: o.photos[0]?.url ?? null,
+        photoCrop: o.photos[0]?.crop ?? null,
         lastMessage: last?.body ?? null,
         tierName: alignment?.tier.name ?? "Aligned",
         tierColor: alignment?.tier.color ?? "#8c857a",

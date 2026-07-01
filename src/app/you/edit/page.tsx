@@ -32,7 +32,13 @@ export default async function EditProfilePage() {
 
       <div className="mt-2">
         <EditForm
-          photos={user.photos.map((p) => ({ id: p.id, url: p.url, isPrimary: p.isPrimary }))}
+          photos={user.photos.map((p) => ({
+            id: p.id,
+            url: p.url,
+            originalUrl: p.originalUrl,
+            crop: p.crop,
+            isPrimary: p.isPrimary,
+          }))}
           initial={{
             name: user.name ?? "",
             essence: user.essence ?? "",

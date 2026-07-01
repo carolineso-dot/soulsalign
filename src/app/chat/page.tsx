@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
-import { Avatar } from "@/components/Avatar";
+import { ProfileImage } from "@/components/ProfileImage";
 import { OrbitEmblem } from "@/components/OrbitEmblem";
+import { parseCrop } from "@/lib/crop";
 import { getCurrentUser } from "@/lib/auth";
 import { getConversations } from "@/lib/chat";
 
@@ -39,7 +40,13 @@ export default async function ChatListPage() {
           {conversations.map((c) => (
             <li key={c.id}>
               <Link href={`/chat/${c.id}`} className="flex items-center gap-3 bg-white/50 px-4 py-3">
-                <Avatar src={c.photoUrl} name={c.name} size={52} />
+                <ProfileImage
+                  src={c.photoUrl}
+                  name={c.name}
+                  crop={parseCrop(c.photoCrop)}
+                  shape="circle"
+                  size={52}
+                />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-serif text-lg text-ink">{c.name}</span>

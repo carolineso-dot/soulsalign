@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
-import { Avatar } from "@/components/Avatar";
+import { ProfileImage } from "@/components/ProfileImage";
 import { getCurrentUser } from "@/lib/auth";
+import { parseCrop } from "@/lib/crop";
 import { signOutAction } from "./actions";
 import { ageFromDob, parseInterests } from "@/lib/profile";
 import {
@@ -41,7 +42,13 @@ export default async function YouPage() {
       </header>
 
       <div className="mt-4 flex items-center gap-4">
-        <Avatar src={primary?.url ?? null} name={user.name ?? "You"} size={88} rounded="card" />
+        <ProfileImage
+          src={primary?.url ?? null}
+          name={user.name ?? "You"}
+          crop={parseCrop(primary?.crop ?? null)}
+          shape="frame"
+          className="w-24 shrink-0"
+        />
         <div>
           <h1 className="font-serif text-2xl text-ink">
             {user.name}
@@ -72,7 +79,14 @@ export default async function YouPage() {
       {user.photos.length > 0 && (
         <div className="mt-5 grid grid-cols-3 gap-3">
           {user.photos.map((p) => (
-            <Avatar key={p.id} src={p.url} name={user.name ?? "You"} size={9999} rounded="card" className="!h-28 !w-full" />
+            <ProfileImage
+              key={p.id}
+              src={p.url}
+              name={user.name ?? "You"}
+              crop={parseCrop(p.crop)}
+              shape="frame"
+              className="w-full"
+            />
           ))}
         </div>
       )}

@@ -71,10 +71,18 @@ model User {
 }
 
 model Photo {
-  id        String  @id @default(cuid())
-  userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  url       String
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // `url` is the display-optimized (downscaled, UNcropped) image shown in the
+  // UI. `originalUrl` is the full-resolution upload, kept so a photo can be
+  // re-cropped later without re-uploading. `crop` is JSON crop settings
+  // (percent rect + zoom + aspect) applied on display via CSS transforms.
+  url         String
+  originalUrl String?
+  crop        String?
+
   sort      Int     @default(0)
   isPrimary Boolean @default(false)
 

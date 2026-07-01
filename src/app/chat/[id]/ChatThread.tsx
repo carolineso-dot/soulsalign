@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Avatar } from "@/components/Avatar";
+import { ProfileImage } from "@/components/ProfileImage";
 import { ReportDialog } from "@/components/ReportDialog";
 import { ThreadMessage } from "@/lib/chat";
+import { parseCrop } from "@/lib/crop";
 
 type Msg = { id: string; mine: boolean; body: string };
 
@@ -12,6 +13,7 @@ export function ChatThread({
   otherId,
   otherName,
   otherPhoto,
+  otherCrop,
   tierName,
   tierColor,
   initialMessages,
@@ -20,6 +22,7 @@ export function ChatThread({
   otherId: string;
   otherName: string;
   otherPhoto: string | null;
+  otherCrop: string | null;
   tierName: string;
   tierColor: string;
   initialMessages: ThreadMessage[];
@@ -75,7 +78,7 @@ export function ChatThread({
           </svg>
         </Link>
         <Link href={`/profile/${otherId}`} className="flex flex-1 items-center gap-3">
-          <Avatar src={otherPhoto} name={otherName} size={40} />
+          <ProfileImage src={otherPhoto} name={otherName} crop={parseCrop(otherCrop)} shape="circle" size={40} />
           <div>
             <div className="font-serif text-lg leading-tight text-ink">{otherName}</div>
             <div className="text-[0.62rem] font-medium uppercase tracking-wider" style={{ color: tierColor }}>

@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Avatar } from "./Avatar";
+import { ProfileImage } from "./ProfileImage";
+import { parseCrop } from "@/lib/crop";
+
+type GalleryPhoto = { url: string; crop: string | null };
 
 type PhotoGalleryProps = {
-  photos: string[];
+  photos: GalleryPhoto[];
   name: string;
   /** Apply a blur (e.g. locked Destined profile). */
   blurred?: boolean;
@@ -12,18 +15,19 @@ type PhotoGalleryProps = {
 
 export function PhotoGallery({ photos, name, blurred }: PhotoGalleryProps) {
   const [idx, setIdx] = useState(0);
-  const list = photos.length > 0 ? photos : [""];
+  const list = photos.length > 0 ? photos : [{ url: "", crop: null }];
   const current = list[Math.min(idx, list.length - 1)];
 
   return (
     <div className="relative overflow-hidden rounded-[1.5rem]">
       <div className={blurred ? "blur-xl" : ""}>
-        <Avatar
-          src={current || null}
+        <ProfileImage
+          src={current.url || null}
           name={name}
-          size={9999}
-          rounded="card"
-          className="!h-[26rem] !w-full !rounded-[1.5rem]"
+          crop={parseCrop(current.crop)}
+          shape="frame"
+          className="w-full"
+          rounded="1.5rem"
         />
       </div>
 
