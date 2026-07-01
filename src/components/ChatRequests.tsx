@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ProfileImage } from "./ProfileImage";
 import { acceptRequest, declineRequest } from "@/app/actions/relations";
@@ -47,7 +48,7 @@ export function ChatRequests({ requests }: { requests: RequestItem[] }) {
       <ul className="mt-3 space-y-3">
         {items.map((r) => (
           <li key={r.id} className="card p-3">
-            <div className="flex items-center gap-3">
+            <Link href={`/profile/${r.id}`} className="flex items-center gap-3">
               <ProfileImage src={r.photoUrl} name={r.name} crop={parseCrop(r.photoCrop)} shape="circle" size={52} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
@@ -63,7 +64,13 @@ export function ChatRequests({ requests }: { requests: RequestItem[] }) {
                   {r.essence ?? "Would like to connect with you."}
                 </p>
               </div>
-            </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8c857a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </Link>
+            <Link href={`/profile/${r.id}`} className="mt-2 block text-center text-xs text-claret underline underline-offset-4">
+              View profile &amp; compatibility
+            </Link>
             <div className="mt-3 flex gap-2">
               <button
                 onClick={() => accept(r.id)}

@@ -24,6 +24,8 @@ export type ProfileView = {
   /** Viewer relationship state. */
   hasSentInterest: boolean;
   isMutual: boolean;
+  /** This person sent the viewer a pending chat request (awaiting decision). */
+  hasIncomingRequest: boolean;
   /** True when this is a Destined profile a free viewer cannot fully open. */
   lockedForFree: boolean;
 };
@@ -102,6 +104,7 @@ export async function getProfileView(
     alignment,
     hasSentInterest: !!sent,
     isMutual: !!sent && !!received,
+    hasIncomingRequest: !!received && received.status === "pending" && !sent,
     lockedForFree,
   };
 }
