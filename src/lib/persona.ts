@@ -68,13 +68,23 @@ HOW YOU WRITE
 - Do not give lists, headings, or markdown. Just speak.`;
 }
 
-/** A graceful, in-character fallback when the AI service is unavailable. */
-export function fallbackReply(name: string): string {
+/**
+ * A graceful, in-character fallback used when the AI service is unavailable
+ * (e.g. no ANTHROPIC_API_KEY set in local dev). `turn` is the number of replies
+ * already sent, so consecutive fallbacks rotate rather than repeat.
+ */
+export function fallbackReply(name: string, turn = 0): string {
   const lines = [
-    "Sorry — I got pulled away for a moment. Tell me, what drew you to my profile?",
-    "My signal's a little patchy tonight. But I'm here. What's been the best part of your day?",
-    "Give me a second to gather my thoughts — you've caught my curiosity. What are you looking for here?",
+    "There's something about the way the universe put us here. What made you pause on my profile?",
+    "I'll admit, our alignment caught my eye. Tell me — what are you hoping to find here?",
+    "I like people who say what they mean. So: what's something you actually care about?",
+    "Honestly, small talk bores me. What's been on your mind lately?",
+    "You have my curiosity. What does a good day look like for you?",
+    "I believe in slow beginnings. Where are you writing from?",
+    "The stars did their part — now it's our turn. What drew you in?",
+    "Tell me one true thing about yourself. I'll trade you one back.",
   ];
-  // Vary by name length so it's deterministic but not always identical.
-  return lines[name.length % lines.length];
+  // Rotate by turn (and nudge by name so different characters differ).
+  const idx = (turn + name.length) % lines.length;
+  return lines[idx];
 }

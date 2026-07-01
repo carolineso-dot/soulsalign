@@ -88,12 +88,24 @@ export async function POST(
         });
         const block = res.content.find((b) => b.type === "text");
         reply = block && "text" in block ? block.text.trim() : null;
-      } catch {
+      } catch (err) {
+        // Log the real reason (bad key, model access, rate limit, network…)
+        // so a failing AI reply is diagnosable instead of silently canned.
+        console.error("[chat] Anthropic request failed:", err);
         reply = null; // fall through to graceful fallback
       }
+    } else {
+      console.warn(
+        "[chat] ANTHROPIC_API_KEY is not set — using the in-character fallback. " +
+          "Add your key to .env and restart to enable real AI replies.",
+      );
     }
 
-    if (!reply) reply = fallbackReply(other.name ?? "");
+    if (!reply) {
+      // Rotate the fallback by how many replies this character has already sent.
+      const priorReplies = messages.filter((m) => m.role === "assistant").length;
+      reply = fallbackReply(other.name ?? "", priorReplies);
+    }
 
     await prisma.message.create({
       data: { fromId: otherId, toId: viewer.id, body: reply, threadKey: key },
