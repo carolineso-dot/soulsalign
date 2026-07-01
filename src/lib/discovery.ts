@@ -83,16 +83,23 @@ export async function getCuratedMatches(
     center = { lat: viewer.locationLat, lon: viewer.locationLon };
   }
 
-  // Everyone the viewer has blocked, or who has blocked the viewer, is excluded.
-  const blocks = await prisma.block.findMany({
-    where: { OR: [{ blockerId: viewer.id }, { blockedId: viewer.id }] },
-    select: { blockerId: true, blockedId: true },
-  });
+  // Exclude blocked pairs, and anyone already in a relationship (chosen, an
+  // active chat, or an incoming request) — Aligned shows only fresh souls.
+  const [blocks, iOut, iIn] = await Promise.all([
+    prisma.block.findMany({
+      where: { OR: [{ blockerId: viewer.id }, { blockedId: viewer.id }] },
+      select: { blockerId: true, blockedId: true },
+    }),
+    prisma.interest.findMany({ where: { fromId: viewer.id }, select: { toId: true } }),
+    prisma.interest.findMany({ where: { toId: viewer.id }, select: { fromId: true } }),
+  ]);
   const excluded = new Set<string>([viewer.id]);
   for (const b of blocks) {
     excluded.add(b.blockerId);
     excluded.add(b.blockedId);
   }
+  for (const o of iOut) excluded.add(o.toId);
+  for (const i of iIn) excluded.add(i.fromId);
 
   const candidates = await prisma.user.findMany({
     where: {

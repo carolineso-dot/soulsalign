@@ -97,13 +97,16 @@ model Photo {
   @@index([userId])
 }
 
-// Expression of interest. A mutual pair (both directions present) is a match.
+// Expression of interest ("choosing" someone / a chat request).
+// status: pending (awaiting the recipient) | accepted | declined.
+// A mutual pair (both directions present, not declined) is an active chat.
 model Interest {
   id        String   @id @default(cuid())
   fromId    String
   toId      String
   from      User     @relation("InterestFrom", fields: [fromId], references: [id], onDelete: Cascade)
   to        User     @relation("InterestTo", fields: [toId], references: [id], onDelete: Cascade)
+  status    String   @default("pending")
   createdAt DateTime @default(now())
 
   @@unique([fromId, toId])

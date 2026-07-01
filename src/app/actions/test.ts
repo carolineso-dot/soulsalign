@@ -56,9 +56,10 @@ export async function forceMatch(targetId: string): Promise<TestResult> {
 }
 
 /**
- * TEST MODE ONLY. On login, auto-grant the member up to `count` mutual matches
- * with compatible seed profiles so there's always someone to chat with.
- * No-op outside test mode. Idempotent; skips blocked and already-mutual pairs.
+ * TEST MODE ONLY. On login, seed a couple of INCOMING chat requests (compatible
+ * seed → the member, pending) so the Chats accept/decline flow is demoable.
+ * No-op outside test mode. Idempotent; skips blocked pairs and anyone the member
+ * already has a relationship with.
  */
 export async function autoGrantTestMatches(
   userId: string,
@@ -86,7 +87,21 @@ export async function autoGrantTestMatches(
     if (!passesConnectionGate(vp.connection, sp.connection)) continue;
     if (await isBlocked(userId, s.id)) continue;
 
-    await makeMutual(userId, s.id);
+    // Skip if any relationship already exists either direction.
+    const existing = await prisma.interest.findFirst({
+      where: {
+        OR: [
+          { fromId: s.id, toId: userId },
+          { fromId: userId, toId: s.id },
+        ],
+      },
+    });
+    if (existing) continue;
+
+    // Incoming pending request from the seed → appears in the member's Chats.
+    await prisma.interest.create({
+      data: { fromId: s.id, toId: userId, status: "pending" },
+    });
     granted++;
   }
 }

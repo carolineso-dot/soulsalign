@@ -1,11 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import {
-  getThreadMessages,
-  isBlockedPair,
-  isMutualMatch,
-} from "@/lib/chat";
+import { canMessage, getThreadMessages } from "@/lib/chat";
 import { toAlignmentProfile } from "@/lib/profile";
 import { computeAlignment } from "@/lib/matching";
 import { hasPlus } from "@/lib/plans";
@@ -21,9 +17,8 @@ export default async function ChatThreadPage({
   if (!user) redirect("/sign-in");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  // Messaging requires a mutual, unblocked match.
-  if (await isBlockedPair(user.id, id)) redirect("/chat");
-  if (!(await isMutualMatch(user.id, id))) redirect(`/profile/${id}`);
+  // You can only open a conversation with someone you've chosen/accepted.
+  if (!(await canMessage(user.id, id))) redirect(`/profile/${id}`);
 
   const other = await prisma.user.findUnique({
     where: { id },

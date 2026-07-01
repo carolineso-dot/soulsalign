@@ -26,7 +26,7 @@ export async function expressInterest(targetId: string): Promise<InterestResult>
 
   await prisma.interest.upsert({
     where: { fromId_toId: { fromId: userId, toId: targetId } },
-    create: { fromId: userId, toId: targetId },
+    create: { fromId: userId, toId: targetId, status: "pending" },
     update: {},
   });
 
@@ -34,8 +34,57 @@ export async function expressInterest(targetId: string): Promise<InterestResult>
     where: { fromId_toId: { fromId: targetId, toId: userId } },
   });
 
+  // Choosing someone who already chose you = accepting their request → mutual.
+  if (reciprocal && reciprocal.status === "pending") {
+    await prisma.interest.update({
+      where: { fromId_toId: { fromId: targetId, toId: userId } },
+      data: { status: "accepted" },
+    });
+  }
+
   revalidatePath(`/profile/${targetId}`);
+  revalidatePath("/discover");
+  revalidatePath("/chosen");
+  revalidatePath("/chat");
   return { ok: true, matched: !!reciprocal };
+}
+
+/** Accept an incoming chat request: reciprocate interest → becomes an active chat. */
+export async function acceptRequest(fromId: string): Promise<InterestResult> {
+  const userId = await getUserId();
+  if (!userId) return { ok: false, matched: false, error: "Not signed in." };
+
+  const incoming = await prisma.interest.findUnique({
+    where: { fromId_toId: { fromId, toId: userId } },
+  });
+  if (!incoming) return { ok: false, matched: false, error: "No request." };
+
+  await prisma.$transaction([
+    prisma.interest.update({
+      where: { fromId_toId: { fromId, toId: userId } },
+      data: { status: "accepted" },
+    }),
+    prisma.interest.upsert({
+      where: { fromId_toId: { fromId: userId, toId: fromId } },
+      create: { fromId: userId, toId: fromId, status: "accepted" },
+      update: { status: "accepted" },
+    }),
+  ]);
+
+  revalidatePath("/chat");
+  return { ok: true, matched: true };
+}
+
+/** Decline an incoming chat request: hide it (won't resurface in Aligned). */
+export async function declineRequest(fromId: string): Promise<SafetyResult> {
+  const userId = await getUserId();
+  if (!userId) return { ok: false, error: "Not signed in." };
+  await prisma.interest.updateMany({
+    where: { fromId, toId: userId },
+    data: { status: "declined" },
+  });
+  revalidatePath("/chat");
+  return { ok: true };
 }
 
 export type SafetyResult = { ok: boolean; error?: string };

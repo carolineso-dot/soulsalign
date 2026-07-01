@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 
 const ITEMS = [
   { href: "/discover", label: "Aligned", icon: AlignedIcon },
-  { href: "/refine", label: "Refine", icon: RefineIcon },
+  { href: "/chosen", label: "Chosen", icon: ChosenIcon },
+  { href: "/chat", label: "Chats", icon: ChatsIcon },
   { href: "/you", label: "You", icon: YouIcon },
-  { href: "/plans", label: "Plans", icon: PlansIcon },
 ];
 
 export function BottomNav() {
@@ -49,12 +49,18 @@ function AlignedIcon({ active }: IconProps) {
   );
 }
 
-function RefineIcon({ active }: IconProps) {
+function ChosenIcon({ active }: IconProps) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.6} strokeLinecap="round">
-      <line x1="4" y1="7" x2="20" y2="7" />
-      <line x1="7" y1="12" x2="17" y2="12" />
-      <line x1="10" y1="17" x2="14" y2="17" />
+    <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth={active ? 1.4 : 1.6} strokeLinejoin="round">
+      <path d="M12 20s-7-4.5-7-9.4A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.6C19 15.5 12 20 12 20z" />
+    </svg>
+  );
+}
+
+function ChatsIcon({ active }: IconProps) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.6} strokeLinejoin="round">
+      <path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z" />
     </svg>
   );
 }
@@ -64,14 +70,6 @@ function YouIcon({ active }: IconProps) {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.6}>
       <circle cx="12" cy="8.5" r="3.6" />
       <path d="M5 19.5c0-3.6 3.1-6 7-6s7 2.4 7 6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function PlansIcon({ active }: IconProps) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.6} strokeLinejoin="round">
-      <path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4 7.2 18.7l.9-5.4L4.2 9.5l5.4-.8z" />
     </svg>
   );
 }

@@ -134,8 +134,26 @@ export default async function YouPage() {
         </section>
       )}
 
-      {/* safety & support */}
+      {/* membership / plans */}
       <section className="mt-8 space-y-px overflow-hidden rounded-2xl border border-hairline">
+        <p className="bg-white/50 px-4 pt-3 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-clay">
+          Membership
+        </p>
+        <Link href="/plans" className="flex items-center justify-between bg-white/50 px-4 py-3 text-sm text-ink">
+          <span>
+            Plans
+            <span className="ml-2 text-xs" style={{ color: plan.accent }}>
+              {plan.name}
+            </span>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8c857a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </Link>
+      </section>
+
+      {/* safety & support */}
+      <section className="mt-6 space-y-px overflow-hidden rounded-2xl border border-hairline">
         <p className="bg-white/50 px-4 pt-3 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-clay">
           Safety &amp; support
         </p>

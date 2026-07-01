@@ -13,6 +13,19 @@ export async function isMutualMatch(a: string, b: string): Promise<boolean> {
   return !!x && !!y;
 }
 
+/**
+ * Whether `viewer` may open/send in a conversation with `other`: they must have
+ * chosen `other` (outgoing interest) and not be blocked. An incoming-only
+ * request must be accepted first (accepting creates the outgoing interest).
+ */
+export async function canMessage(viewerId: string, otherId: string): Promise<boolean> {
+  if (await isBlockedPair(viewerId, otherId)) return false;
+  const out = await prisma.interest.findUnique({
+    where: { fromId_toId: { fromId: viewerId, toId: otherId } },
+  });
+  return !!out && out.status !== "declined";
+}
+
 export async function isBlockedPair(a: string, b: string): Promise<boolean> {
   const block = await prisma.block.findFirst({
     where: {

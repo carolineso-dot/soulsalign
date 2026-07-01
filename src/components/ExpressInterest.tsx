@@ -29,6 +29,23 @@ export function ExpressInterest({
     );
   }
 
+  // Already chosen — invite the user to begin the conversation.
+  if (sent) {
+    return (
+      <div className="space-y-2">
+        <p className="text-center text-xs text-clay">
+          Chosen — they&rsquo;re in your Chosen list.
+        </p>
+        <button
+          onClick={() => router.push(`/chat/${targetId}`)}
+          className="btn btn-primary w-full px-6 py-3.5"
+        >
+          Start conversation
+        </button>
+      </div>
+    );
+  }
+
   const onClick = () => {
     startTransition(async () => {
       const res = await expressInterest(targetId);
@@ -42,17 +59,9 @@ export function ExpressInterest({
     });
   };
 
-  if (sent) {
-    return (
-      <button disabled className="btn btn-ghost w-full px-6 py-3.5">
-        Interest expressed
-      </button>
-    );
-  }
-
   return (
     <button onClick={onClick} disabled={pending} className="btn btn-primary w-full px-6 py-3.5">
-      {pending ? "Sending…" : "Express interest"}
+      {pending ? "Choosing…" : "Choose"}
     </button>
   );
 }

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { MatchCard } from "@/components/MatchCard";
@@ -54,7 +55,7 @@ export default async function DiscoverPage({
 
   return (
     <AppShell>
-      <header className="flex items-center justify-between pt-10">
+      <header className="flex items-start justify-between pt-10">
         <div>
           <p className="label-eyebrow">Aligned</p>
           <h1 className="mt-1 font-serif text-3xl text-ink">
@@ -66,7 +67,18 @@ export default async function DiscoverPage({
               : "New alignments are forming. Check back soon."}
           </p>
         </div>
-        <OrbitEmblem size={56} minimal />
+        <Link
+          href="/refine"
+          aria-label="Refine"
+          className="mt-1 flex items-center gap-1.5 rounded-full border border-hairline bg-ivory/70 px-3 py-2 text-xs font-medium text-ink"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <line x1="7" y1="12" x2="17" y2="12" />
+            <line x1="10" y1="17" x2="14" y2="17" />
+          </svg>
+          Refine
+        </Link>
       </header>
 
       {hasFilters && (

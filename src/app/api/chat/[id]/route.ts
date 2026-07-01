@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { isBlockedPair, isMutualMatch } from "@/lib/chat";
+import { canMessage } from "@/lib/chat";
 import { threadKey, toAlignmentProfile } from "@/lib/profile";
 import { computeAlignment } from "@/lib/matching";
 import { hasPlus } from "@/lib/plans";
@@ -29,12 +29,12 @@ export async function POST(
     return NextResponse.json({ error: "Message is too long." }, { status: 400 });
   }
 
-  // Messaging is allowed only between mutual matches who aren't blocked.
-  if (await isBlockedPair(viewer.id, otherId)) {
-    return NextResponse.json({ error: "Unavailable." }, { status: 403 });
-  }
-  if (!(await isMutualMatch(viewer.id, otherId))) {
-    return NextResponse.json({ error: "You can only message a match." }, { status: 403 });
+  // You can message someone you've chosen (or accepted); not if blocked.
+  if (!(await canMessage(viewer.id, otherId))) {
+    return NextResponse.json(
+      { error: "Choose this person before messaging." },
+      { status: 403 },
+    );
   }
 
   const other = await prisma.user.findUnique({ where: { id: otherId } });

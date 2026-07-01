@@ -77,18 +77,34 @@ export default async function ProfilePage({
         <Trio glyph={view.zodiacAnimal ? animalGlyph(view.zodiacAnimal as never) : "生"} label="Zodiac" value={view.zodiacAnimal ?? "—"} />
       </div>
 
-      {/* why you align */}
+      {/* compatibility — overall + five dimensions */}
       <section className="mt-6 card p-5">
         <div className="flex items-center justify-between">
-          <p className="label-eyebrow">Why you align</p>
+          <p className="label-eyebrow">Compatibility</p>
           <Link href="/method" className="text-xs text-claret underline underline-offset-4">
             Understand our method
           </Link>
         </div>
-        <p className="mt-2 font-serif text-lg leading-snug" style={{ color: alignment.tier.color }}>
+        <div className="mt-2 flex items-baseline gap-2">
+          <span className="font-serif text-3xl" style={{ color: alignment.tier.color }}>
+            {alignment.score}
+          </span>
+          <span className="text-sm text-clay">overall · {alignment.tier.name}</span>
+        </div>
+        <p className="mt-1 font-serif text-base leading-snug text-clay">
           {alignment.tier.note}
         </p>
         <div className="mt-5 space-y-4">
+          {alignment.dimensions.map((d) => (
+            <SignalBar key={d.key} label={`${d.label} compatibility`} detail={d.detail} score={d.score} color={d.color} />
+          ))}
+        </div>
+      </section>
+
+      {/* the three signals behind the reading */}
+      <section className="mt-4 rounded-2xl border border-hairline bg-white/40 p-5">
+        <p className="label-eyebrow">The signals behind it</p>
+        <div className="mt-4 space-y-4">
           {alignment.breakdown.map((b) => (
             <SignalBar key={b.label} label={b.label} detail={b.detail} score={b.score} color={b.color} />
           ))}

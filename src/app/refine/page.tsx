@@ -1,5 +1,5 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { AppShell } from "@/components/AppShell";
 import { getCurrentUser } from "@/lib/auth";
 import { RefineForm } from "./RefineForm";
 
@@ -9,18 +9,22 @@ export default async function RefinePage() {
   if (!user.onboardingComplete) redirect("/onboarding");
 
   return (
-    <AppShell>
-      <header className="pt-10">
-        <p className="label-eyebrow">Refine</p>
-        <h1 className="mt-1 font-serif text-3xl text-ink">Shape your search</h1>
-        <p className="mt-1 text-sm text-clay">
-          The universe still does the choosing — you simply set the bounds.
-        </p>
+    <div className="mx-auto min-h-dvh max-w-md px-5 pb-16">
+      <header className="flex items-center gap-3 py-4">
+        <Link href="/discover" aria-label="Back to Aligned" className="flex h-9 w-9 items-center justify-center rounded-full border border-hairline bg-ivory/70">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#23201b" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </Link>
+        <div>
+          <p className="label-eyebrow">Refine</p>
+          <h1 className="font-serif text-2xl text-ink">Shape your search</h1>
+        </div>
       </header>
 
-      <div className="mt-8">
+      <div className="mt-4">
         <RefineForm homeLocation={user.locationLabel ?? null} />
       </div>
-    </AppShell>
+    </div>
   );
 }

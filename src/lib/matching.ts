@@ -38,6 +38,21 @@ export type SignalBreakdown = {
   color: string;
 };
 
+export type DimensionKey =
+  | "cerebral"
+  | "sexual"
+  | "lifestyle"
+  | "personality"
+  | "emotions";
+
+export type Dimension = {
+  key: DimensionKey;
+  label: string;
+  score: number;
+  detail: string;
+  color: string;
+};
+
 export type Alignment = {
   score: number;
   tier: Tier;
@@ -47,6 +62,8 @@ export type Alignment = {
     zodiac: number;
   };
   breakdown: SignalBreakdown[];
+  /** Five facets of compatibility, derived from the destiny signals. */
+  dimensions: Dimension[];
 };
 
 const CLAMP_MIN = 70;
@@ -137,6 +154,104 @@ function zodiacDetail(a: ZodiacAnimal, b: ZodiacAnimal): string {
   }
 }
 
+/* ---------------------------- five dimensions ---------------------------- */
+
+const DIMENSION_META: {
+  key: DimensionKey;
+  label: string;
+  color: string;
+}[] = [
+  { key: "cerebral", label: "Cerebral", color: "#4e4a63" },
+  { key: "sexual", label: "Sexual", color: "#7e3340" },
+  { key: "lifestyle", label: "Lifestyle", color: "#a8843b" },
+  { key: "personality", label: "Personality", color: "#5f7268" },
+  { key: "emotions", label: "Emotions", color: "#a45562" },
+];
+
+function dimDetail(key: DimensionKey, score: number): string {
+  const high = score >= 90;
+  const mid = score >= 80;
+  switch (key) {
+    case "cerebral":
+      return high
+        ? "Minds that spark off one another — conversation could run for hours."
+        : mid
+          ? "A ready meeting of minds, with room to surprise each other."
+          : "Different ways of thinking — intriguing, if you stay curious.";
+    case "sexual":
+      return high
+        ? "A magnetic, elemental pull between you."
+        : mid
+          ? "A genuine chemistry waiting to be explored."
+          : "A slower burn — attraction that reveals itself in time.";
+    case "lifestyle":
+      return high
+        ? "Your rhythms of daily life fall into easy step."
+        : mid
+          ? "Compatible day-to-day, with a few gentle differences."
+          : "Distinct rhythms — harmony here will take intention.";
+    case "personality":
+      return high
+        ? "Temperaments that fit like two halves of a whole."
+        : mid
+          ? "Natures that complement more than they collide."
+          : "Contrasting characters — friction that can become depth.";
+    case "emotions":
+      return high
+        ? "You could feel deeply safe and understood together."
+        : mid
+          ? "An emotional current that can hold real weight."
+          : "Different emotional languages — worth learning each other's.";
+  }
+}
+
+/**
+ * Five facets of compatibility, each a distinctly-weighted read of the three
+ * destiny signals plus elemental flavour — so the overall score opens into a
+ * cerebral / sexual / lifestyle / personality / emotions profile.
+ */
+export function computeDimensions(
+  a: AlignmentProfile,
+  b: AlignmentProfile,
+  rich = false,
+): Dimension[] {
+  const E = elementalScore(a.baziElement, b.baziElement);
+  const A = rich
+    ? richAstralScore(a.chart, b.chart)
+    : astralScore(a.chart.sunElement, b.chart.sunElement);
+  const Z = zodiacScore(a.zodiacAnimal, b.zodiacAnimal);
+
+  const els = [a.chart.sunElement, b.chart.sunElement];
+  const hasAir = els.includes("Air");
+  const hasFire = els.includes("Fire");
+  const hasWater = els.includes("Water");
+  const hasEarth = els.includes("Earth");
+  const clash = zodiacRelation(a.zodiacAnimal, b.zodiacAnimal) === "clash";
+  const sameSeeking =
+    a.connection === b.connection ||
+    a.connection === "both" ||
+    b.connection === "both";
+
+  const blend = (we: number, wa: number, wz: number, mod: number) =>
+    clamp(Math.round(E * we + A * wa + Z * wz + mod));
+
+  const scores: Record<DimensionKey, number> = {
+    cerebral: blend(0.2, 0.5, 0.3, hasAir ? 2 : 0),
+    sexual: blend(0.45, 0.35, 0.2, (hasFire ? 3 : 0) + (clash ? 2 : 0)),
+    lifestyle: blend(0.35, 0.2, 0.45, (hasEarth ? 2 : 0) + (clash ? -3 : 0) + (sameSeeking ? 1 : 0)),
+    personality: blend(0.2, 0.3, 0.5, 0),
+    emotions: blend(0.4, 0.45, 0.15, hasWater ? 2 : 0),
+  };
+
+  return DIMENSION_META.map((m) => ({
+    key: m.key,
+    label: m.label,
+    color: m.color,
+    score: scores[m.key],
+    detail: dimDetail(m.key, scores[m.key]),
+  }));
+}
+
 /* ------------------------------- the score ------------------------------- */
 
 /**
@@ -187,5 +302,6 @@ export function computeAlignment(
         color: "#4e4a63",
       },
     ],
+    dimensions: computeDimensions(a, b, rich),
   };
 }
