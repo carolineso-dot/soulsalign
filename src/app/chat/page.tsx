@@ -66,7 +66,13 @@ export default async function ChatListPage() {
                         </span>
                       </div>
                       <p className="truncate text-sm text-clay">
-                        {c.lastMessage ?? "Say hello — the stars approve."}
+                        {c.state === "declined" ? (
+                          <span className="text-claret/80">Declined your request</span>
+                        ) : c.state === "pending" ? (
+                          <span className="italic">Waiting for them to accept…</span>
+                        ) : (
+                          (c.lastMessage ?? "Say hello — the stars approve.")
+                        )}
                       </p>
                     </div>
                   </Link>

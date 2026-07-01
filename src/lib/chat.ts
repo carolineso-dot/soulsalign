@@ -13,17 +13,53 @@ export async function isMutualMatch(a: string, b: string): Promise<boolean> {
   return !!x && !!y;
 }
 
+export type ThreadState = "pending" | "accepted" | "declined";
+
+export type ThreadAccess = {
+  /** Whether the viewer may open the conversation view at all. */
+  canView: boolean;
+  /** Whether the viewer may send messages right now. */
+  canSend: boolean;
+  /** Relationship state from the viewer's perspective (null if no thread). */
+  state: ThreadState | null;
+};
+
 /**
- * Whether `viewer` may open/send in a conversation with `other`: they must have
- * chosen `other` (outgoing interest) and not be blocked. An incoming-only
- * request must be accepted first (accepting creates the outgoing interest).
+ * The viewer's access to a conversation with `other`. The viewer must have
+ * chosen `other` (an outgoing interest) to view/initiate. `state` reflects the
+ * recipient's decision on that request:
+ *   pending  — the viewer chose them; awaiting the other's accept/decline
+ *   accepted — reciprocated (or the other accepted); free to chat
+ *   declined — the other declined; view-only, shows a notice, no sending
  */
-export async function canMessage(viewerId: string, otherId: string): Promise<boolean> {
-  if (await isBlockedPair(viewerId, otherId)) return false;
+export async function getThreadAccess(
+  viewerId: string,
+  otherId: string,
+): Promise<ThreadAccess> {
+  if (await isBlockedPair(viewerId, otherId)) {
+    return { canView: false, canSend: false, state: null };
+  }
   const out = await prisma.interest.findUnique({
     where: { fromId_toId: { fromId: viewerId, toId: otherId } },
   });
-  return !!out && out.status !== "declined";
+  if (!out) return { canView: false, canSend: false, state: null };
+
+  const inb = await prisma.interest.findUnique({
+    where: { fromId_toId: { fromId: otherId, toId: viewerId } },
+  });
+  const mutual = !!inb && inb.status !== "declined";
+
+  let state: ThreadState;
+  if (out.status === "declined") state = "declined";
+  else if (mutual || out.status === "accepted") state = "accepted";
+  else state = "pending";
+
+  return { canView: true, canSend: state !== "declined", state };
+}
+
+/** Convenience: may the viewer send a message to `other` right now? */
+export async function canMessage(viewerId: string, otherId: string): Promise<boolean> {
+  return (await getThreadAccess(viewerId, otherId)).canSend;
 }
 
 export async function isBlockedPair(a: string, b: string): Promise<boolean> {

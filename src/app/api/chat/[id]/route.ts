@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { canMessage } from "@/lib/chat";
+import { getThreadAccess } from "@/lib/chat";
 import { threadKey, toAlignmentProfile } from "@/lib/profile";
 import { computeAlignment } from "@/lib/matching";
 import { hasPlus } from "@/lib/plans";
@@ -29,10 +29,13 @@ export async function POST(
     return NextResponse.json({ error: "Message is too long." }, { status: 400 });
   }
 
-  // You can message someone you've chosen (or accepted); not if blocked.
-  if (!(await canMessage(viewer.id, otherId))) {
+  // You may send only if you've chosen them and they haven't declined.
+  const access = await getThreadAccess(viewer.id, otherId);
+  if (!access.canSend) {
     return NextResponse.json(
-      { error: "Choose this person before messaging." },
+      access.state === "declined"
+        ? { error: "This person declined your request." }
+        : { error: "Choose this person before messaging." },
       { status: 403 },
     );
   }
@@ -43,6 +46,22 @@ export async function POST(
   }
 
   const key = threadKey(viewer.id, otherId);
+
+  // Seeded characters are bots — they auto-accept, so the conversation is
+  // active immediately rather than sitting as a pending request.
+  if (other.isSeed) {
+    await prisma.$transaction([
+      prisma.interest.update({
+        where: { fromId_toId: { fromId: viewer.id, toId: otherId } },
+        data: { status: "accepted" },
+      }),
+      prisma.interest.upsert({
+        where: { fromId_toId: { fromId: otherId, toId: viewer.id } },
+        create: { fromId: otherId, toId: viewer.id, status: "accepted" },
+        update: { status: "accepted" },
+      }),
+    ]);
+  }
 
   // Persist the member's message.
   await prisma.message.create({

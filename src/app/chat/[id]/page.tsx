@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { canMessage, getThreadMessages } from "@/lib/chat";
+import { getThreadAccess, getThreadMessages } from "@/lib/chat";
 import { toAlignmentProfile } from "@/lib/profile";
 import { computeAlignment } from "@/lib/matching";
 import { hasPlus } from "@/lib/plans";
@@ -17,8 +17,9 @@ export default async function ChatThreadPage({
   if (!user) redirect("/sign-in");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  // You can only open a conversation with someone you've chosen/accepted.
-  if (!(await canMessage(user.id, id))) redirect(`/profile/${id}`);
+  // You can view a conversation only with someone you've chosen (any state).
+  const access = await getThreadAccess(user.id, id);
+  if (!access.canView) redirect(`/profile/${id}`);
 
   const other = await prisma.user.findUnique({
     where: { id },
@@ -44,6 +45,8 @@ export default async function ChatThreadPage({
       tierColor={alignment?.tier.color ?? "#8c857a"}
       initialMessages={messages}
       repliesAutomatically={other.isSeed}
+      state={access.state}
+      canSend={access.canSend}
     />
   );
 }

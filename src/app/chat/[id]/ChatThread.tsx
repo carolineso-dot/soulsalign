@@ -18,6 +18,8 @@ export function ChatThread({
   tierColor,
   initialMessages,
   repliesAutomatically,
+  state,
+  canSend,
 }: {
   otherId: string;
   otherName: string;
@@ -27,7 +29,12 @@ export function ChatThread({
   tierColor: string;
   initialMessages: ThreadMessage[];
   repliesAutomatically: boolean;
+  state: "pending" | "accepted" | "declined" | null;
+  canSend: boolean;
 }) {
+  // Bots (seeded characters) auto-accept, so never show a "pending" wait.
+  const showPending = state === "pending" && !repliesAutomatically;
+  const declined = state === "declined";
   const [messages, setMessages] = useState<Msg[]>(initialMessages);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -40,7 +47,7 @@ export function ChatThread({
 
   const send = async () => {
     const text = input.trim();
-    if (!text || sending) return;
+    if (!text || sending || !canSend) return;
     setInput("");
     setSending(true);
     const tempId = `t-${messages.length}-${text.length}`;
@@ -92,7 +99,11 @@ export function ChatThread({
       {/* messages */}
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-5">
         <p className="text-center text-xs text-clay">
-          You matched as <span style={{ color: tierColor }}>{tierName}</span>. Begin gently.
+          {declined
+            ? "This conversation is closed."
+            : showPending
+              ? `Your request has been sent to ${otherName}.`
+              : <>You matched as <span style={{ color: tierColor }}>{tierName}</span>. Begin gently.</>}
         </p>
         {messages.map((m) => (
           <div key={m.id} className={`flex ${m.mine ? "justify-end" : "justify-start"}`}>
@@ -117,33 +128,48 @@ export function ChatThread({
         <div ref={endRef} />
       </div>
 
-      {/* composer */}
+      {/* composer / status */}
       <div className="border-t border-hairline bg-ivory/90 px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
-        <div className="flex items-end gap-2">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                send();
-              }
-            }}
-            rows={1}
-            placeholder="Write something true…"
-            className="field max-h-32 flex-1 resize-none"
-          />
-          <button
-            onClick={send}
-            disabled={sending || !input.trim()}
-            className="btn btn-primary h-11 w-11 shrink-0 !rounded-full p-0"
-            aria-label="Send"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4z" />
-            </svg>
-          </button>
-        </div>
+        {declined ? (
+          <p className="px-2 py-2 text-center text-sm text-clay">
+            <span className="font-medium text-claret">{otherName} declined</span> your
+            request. They won&rsquo;t see your messages.
+          </p>
+        ) : (
+          <>
+            {showPending && (
+              <p className="mb-2 rounded-lg bg-grad-to/50 px-3 py-2 text-center text-xs leading-relaxed text-clay">
+                Waiting for {otherName} to accept — they&rsquo;ll see your messages
+                once they do.
+              </p>
+            )}
+            <div className="flex items-end gap-2">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    send();
+                  }
+                }}
+                rows={1}
+                placeholder={showPending ? "Send an opening message…" : "Write something true…"}
+                className="field max-h-32 flex-1 resize-none"
+              />
+              <button
+                onClick={send}
+                disabled={sending || !input.trim()}
+                className="btn btn-primary h-11 w-11 shrink-0 !rounded-full p-0"
+                aria-label="Send"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4z" />
+                </svg>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

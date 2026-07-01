@@ -20,6 +20,7 @@ export type PersonCard = {
   tierColor: string;
   distanceKm: number | null;
   lastMessage?: string | null;
+  state?: "pending" | "accepted" | "declined";
 };
 
 type ViewerLike = Parameters<typeof toAlignmentProfile>[0] & {
@@ -162,7 +163,8 @@ export async function getChatData(viewer: ViewerLike): Promise<ChatData> {
   // Active: for each iOut, active if mutual OR messages exist.
   for (const o of out) {
     if (blocked.has(o.toId)) continue;
-    const mutual = inbound.some((i) => i.fromId === o.toId);
+    const reciprocal = inbound.find((i) => i.fromId === o.toId);
+    const mutual = !!reciprocal && reciprocal.status !== "declined";
     const hasMsg = await pairHasMessages(viewer.id, o.toId);
     if (!mutual && !hasMsg) continue; // still "chosen", not a chat yet
     const cand = await fetchCardUser(o.toId);
@@ -174,6 +176,12 @@ export async function getChatData(viewer: ViewerLike): Promise<ChatData> {
       orderBy: { createdAt: "desc" },
     });
     card.lastMessage = last?.body ?? null;
+    card.state =
+      o.status === "declined"
+        ? "declined"
+        : mutual || o.status === "accepted"
+          ? "accepted"
+          : "pending";
     active.push({ card, at: last?.createdAt.getTime() ?? 0 });
   }
 
