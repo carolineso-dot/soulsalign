@@ -24,12 +24,8 @@ export function Avatar({
   className = "",
 }: AvatarProps) {
   const [failed, setFailed] = useState(false);
-  const initials = name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase())
-    .join("");
+  // Elegant duotone fallback: the first initial on a gradient.
+  const initials = (name.trim()[0] ?? "?").toUpperCase();
 
   const radius = rounded === "full" ? "9999px" : "1rem";
   const showImg = src && !failed;

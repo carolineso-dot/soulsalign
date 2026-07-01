@@ -8,20 +8,12 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { promises as fs } from "fs";
-import path from "path";
 import bcrypt from "bcryptjs";
 import { Origin, Horoscope } from "circular-natal-horoscope-js";
 import { elementFromYear } from "../src/lib/bazi";
-import { animalFromYear, animalGlyph } from "../src/lib/zodiac";
-import {
-  sunElement,
-  sunSignFromDate,
-  signGlyph,
-  SunSign,
-} from "../src/lib/astrology";
+import { animalFromYear } from "../src/lib/zodiac";
+import { sunElement, sunSignFromDate, SunSign } from "../src/lib/astrology";
 import { lookupPlace } from "../src/lib/geo";
-import { portraitSvg } from "./seed-portrait";
 
 const prisma = new PrismaClient();
 
@@ -275,14 +267,7 @@ function computeChart(s: Seed): {
   }
 }
 
-function initials(name: string): string {
-  return name.slice(0, 2).toUpperCase();
-}
-
 async function main() {
-  const seedDir = path.join(process.cwd(), "public", "seed");
-  await fs.mkdir(seedDir, { recursive: true });
-
   // Clear previous seed users (and their relations cascade).
   await prisma.user.deleteMany({ where: { isSeed: true } });
 
@@ -296,21 +281,10 @@ async function main() {
     const dob = new Date(Date.UTC(s.y, s.mo - 1, s.d));
     const geo = s.place ? lookupPlace(s.place) : null;
 
-    // Write portrait asset(s).
-    const slug = s.email.split("@")[0];
-    const photoUrls: string[] = [];
-    const photoCount = 1 + (s.extraPhotos ?? 0);
-    for (let p = 0; p < photoCount; p++) {
-      const svg = portraitSvg({
-        initials: initials(s.name),
-        glyph: p % 2 === 0 ? animalGlyph(zodiacAnimal) : signGlyph(chart.sun),
-        sign: p % 2 === 0 ? chart.sun : zodiacAnimal,
-        variant: i + p,
-      });
-      const file = `${slug}-${p}.svg`;
-      await fs.writeFile(path.join(seedDir, file), svg, "utf8");
-      photoUrls.push(`/seed/${file}`);
-    }
+    // Reference a committed royalty-free portrait (root-absolute path so it
+    // loads identically in dev and production builds). One believable photo per
+    // profile — operators replace these placeholders with real member photos.
+    const photoUrls = [`/profiles/portrait-${String(i + 1).padStart(2, "0")}.jpg`];
 
     await prisma.user.create({
       data: {
