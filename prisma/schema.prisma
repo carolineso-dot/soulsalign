@@ -1,18 +1,19 @@
-// Souls Align — data model.
+// Souls Align — data model (PostgreSQL, hosted on Supabase).
 //
-// Local dev uses SQLite for zero-setup. To move to Supabase/Postgres in
-// production, change `provider` to "postgresql" and point DATABASE_URL at the
-// Supabase connection string (see DEPLOYMENT.md). The schema is intentionally
-// portable: no native enums, no scalar arrays — strings + a JSON-encoded
-// interests field — so the swap is a one-line change.
+// The schema is intentionally simple/portable: no native enums, no scalar
+// arrays — strings + a JSON-encoded interests field.
+//   DATABASE_URL — Supabase transaction pooler (6543, ?pgbouncer=true), app runtime
+//   DIRECT_URL   — Supabase session pooler (5432), used by prisma migrate
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
