@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "postinstall": "prisma generate",
+    "prod:schema": "node scripts/gen-prod-schema.mjs",
+    "vercel-build": "node scripts/gen-prod-schema.mjs && prisma generate --schema prisma/prod/schema.prisma && prisma migrate deploy --schema prisma/prod/schema.prisma && next build",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:prod": "prisma generate --schema prisma/prod/schema.prisma && tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force"
   },
   "prisma": {
