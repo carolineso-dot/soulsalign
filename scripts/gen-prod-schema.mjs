@@ -19,6 +19,12 @@ const raw = await fs.readFile(SRC, "utf8");
 let out = raw
   // sqlite -> postgresql
   .replace(/provider\s*=\s*"sqlite"/, 'provider = "postgresql"')
+  // add a direct connection for migrations (Supabase pooled URL can't run them).
+  // Pooled DATABASE_URL is used by the app; DIRECT_URL (port 5432) by migrate.
+  .replace(
+    /(url\s*=\s*env\("DATABASE_URL"\))/,
+    '$1\n  directUrl = env("DIRECT_URL")',
+  )
   // add Vercel/Linux engine target to the generator
   .replace(
     /generator client \{\s*\n\s*provider\s*=\s*"prisma-client-js"/,
