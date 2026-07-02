@@ -22,7 +22,7 @@ export function BottomNav() {
               key={href}
               href={href}
               className="flex flex-1 flex-col items-center gap-1 py-2.5"
-              style={{ color: active ? "#7e3340" : "#8c857a" }}
+              style={{ color: active ? "#7e3340" : "var(--color-clay)" }}
             >
               <Icon active={active} />
               <span className="text-[0.62rem] font-medium uppercase tracking-[0.14em]">

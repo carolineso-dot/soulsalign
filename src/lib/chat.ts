@@ -135,7 +135,7 @@ export async function getConversations(
         photoCrop: o.photos[0]?.crop ?? null,
         lastMessage: last?.body ?? null,
         tierName: alignment?.tier.name ?? "Aligned",
-        tierColor: alignment?.tier.color ?? "#8c857a",
+        tierColor: alignment?.tier.color ?? "var(--color-clay)",
       },
     });
   }

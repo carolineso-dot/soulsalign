@@ -51,10 +51,10 @@ export function CropModal({
     <div className="fixed inset-0 z-[60] flex flex-col bg-ink/80 backdrop-blur-sm">
       <div className="mx-auto flex h-full w-full max-w-md flex-col">
         <header className="flex items-center justify-between px-5 py-4">
-          <button onClick={onCancel} className="text-sm text-ivory/80">
+          <button onClick={onCancel} className="text-sm text-on-accent/80">
             Cancel
           </button>
-          <span className="font-serif text-lg text-ivory">{title}</span>
+          <span className="font-serif text-lg text-on-accent">{title}</span>
           <button
             onClick={confirm}
             disabled={busy}
@@ -93,7 +93,7 @@ export function CropModal({
 
         {/* controls */}
         <div className="space-y-3 px-6 py-6">
-          <p className="text-center text-xs text-ivory/70">
+          <p className="text-center text-xs text-on-accent/70">
             Drag to reposition · pinch or use the slider to zoom
           </p>
           <div className="flex items-center gap-3">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { ProfileImage } from "@/components/ProfileImage";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { getCurrentUser } from "@/lib/auth";
 import { parseCrop } from "@/lib/crop";
 import { signOutAction } from "./actions";
@@ -30,15 +31,18 @@ export default async function YouPage() {
     <AppShell>
       <header className="flex items-center justify-between pt-10">
         <p className="label-eyebrow">You</p>
-        <Link
-          href="/you/edit"
-          aria-label="Edit profile"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-hairline bg-ivory/70"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#23201b" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
-          </svg>
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Link
+            href="/you/edit"
+            aria-label="Edit profile"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-hairline veil"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+            </svg>
+          </Link>
+        </div>
       </header>
 
       <div className="mt-4 flex items-center gap-4">
@@ -128,7 +132,7 @@ export default async function YouPage() {
           <p className="label-eyebrow">Interests</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {interests.map((it) => (
-              <span key={it} className="rounded-full border border-hairline bg-white/50 px-3 py-1 text-sm text-ink/80">{it}</span>
+              <span key={it} className="rounded-full border border-hairline veil px-3 py-1 text-sm text-ink/80">{it}</span>
             ))}
           </div>
         </section>
@@ -136,17 +140,17 @@ export default async function YouPage() {
 
       {/* membership / plans */}
       <section className="mt-8 space-y-px overflow-hidden rounded-2xl border border-hairline">
-        <p className="bg-white/50 px-4 pt-3 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-clay">
+        <p className="veil px-4 pt-3 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-clay">
           Membership
         </p>
-        <Link href="/plans" className="flex items-center justify-between bg-white/50 px-4 py-3 text-sm text-ink">
+        <Link href="/plans" className="flex items-center justify-between veil px-4 py-3 text-sm text-ink">
           <span>
             Plans
             <span className="ml-2 text-xs" style={{ color: plan.accent }}>
               {plan.name}
             </span>
           </span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8c857a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-clay)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 6l6 6-6 6" />
           </svg>
         </Link>
@@ -154,7 +158,7 @@ export default async function YouPage() {
 
       {/* safety & support */}
       <section className="mt-6 space-y-px overflow-hidden rounded-2xl border border-hairline">
-        <p className="bg-white/50 px-4 pt-3 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-clay">
+        <p className="veil px-4 pt-3 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-clay">
           Safety &amp; support
         </p>
         <SafetyLink href="/safety/report" label="Report an issue" />
@@ -171,7 +175,7 @@ export default async function YouPage() {
 
 function Trio({ glyph, label, value }: { glyph: string; label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-hairline bg-white/40 px-2 py-3">
+    <div className="rounded-xl border border-hairline veil px-2 py-3">
       <div className="font-serif text-2xl text-ink">{glyph}</div>
       <div className="label-eyebrow mt-1 !text-[0.58rem]">{label}</div>
       <div className="mt-0.5 text-sm text-ink">{value}</div>
@@ -190,9 +194,9 @@ function Row({ k, v }: { k: string; v: string }) {
 
 function SafetyLink({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className="flex items-center justify-between bg-white/50 px-4 py-3 text-sm text-ink">
+    <Link href={href} className="flex items-center justify-between veil px-4 py-3 text-sm text-ink">
       {label}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8c857a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-clay)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 6l6 6-6 6" />
       </svg>
     </Link>

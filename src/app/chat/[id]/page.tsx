@@ -42,7 +42,7 @@ export default async function ChatThreadPage({
       otherPhoto={other.photos[0]?.url ?? null}
       otherCrop={other.photos[0]?.crop ?? null}
       tierName={alignment?.tier.name ?? "Aligned"}
-      tierColor={alignment?.tier.color ?? "#8c857a"}
+      tierColor={alignment?.tier.color ?? "var(--color-clay)"}
       initialMessages={messages}
       repliesAutomatically={other.isSeed}
       state={access.state}

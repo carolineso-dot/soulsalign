@@ -25,7 +25,7 @@ export const PLANS: Plan[] = [
       "Your alignment score & tier",
       "Messaging once mutually matched",
     ],
-    accent: "#8c857a",
+    accent: "var(--color-clay)",
   },
   {
     key: "aligned_plus",

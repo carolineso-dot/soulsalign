@@ -36,32 +36,35 @@ export function RadarChart({ dimensions, overall, tierColor }: RadarChartProps) 
     <svg viewBox={`0 0 ${size} ${size}`} width="100%" className="mx-auto max-w-[320px]">
       {/* grid rings */}
       {rings.map((r, i) => (
-        <path key={i} d={toPath(r)} fill="none" stroke="#e7e0d4" strokeWidth={1} />
+        <path key={i} d={toPath(r)} fill="none" stroke="var(--color-hairline)" strokeWidth={1} />
       ))}
       {/* axes */}
       {dimensions.map((_, i) => {
         const [x, y] = pt(i, R);
-        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="#e7e0d4" strokeWidth={1} />;
+        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="var(--color-hairline)" strokeWidth={1} />;
       })}
 
-      {/* data polygon */}
+      {/* data polygon (draws itself in) */}
       <path
+        className="orbit-star"
         d={toPath(dataPts)}
         fill={`color-mix(in srgb, ${tierColor} 22%, transparent)`}
         stroke={tierColor}
         strokeWidth={2}
         strokeLinejoin="round"
+        strokeDasharray={900}
+        style={{ ["--dash" as string]: "900", animation: "draw 1.1s cubic-bezier(0.22,1,0.36,1) both" }}
       />
       {dataPts.map((p, i) => (
         <circle key={i} cx={p[0]} cy={p[1]} r={3} fill={dimensions[i].color} />
       ))}
 
       {/* centre: overall score */}
-      <circle cx={cx} cy={cy} r={26} fill="var(--color-ivory, #fbf9f5)" stroke="#e7e0d4" />
-      <text x={cx} y={cy - 2} textAnchor="middle" fontFamily="var(--font-cormorant), serif" fontSize={26} fontWeight={600} fill={tierColor}>
+      <circle cx={cx} cy={cy} r={26} fill="var(--color-ivory, #fbf9f5)" stroke="var(--color-hairline)" />
+      <text x={cx} y={cy - 2} textAnchor="middle" fontFamily="var(--font-cormorant), serif" fontSize={26} fontWeight={600} fill={tierColor} style={{ fontVariantNumeric: "tabular-nums" }}>
         {overall}
       </text>
-      <text x={cx} y={cy + 12} textAnchor="middle" fontFamily="var(--font-inter), sans-serif" fontSize={7} letterSpacing="0.15em" fill="#8c857a">
+      <text x={cx} y={cy + 12} textAnchor="middle" fontFamily="var(--font-inter), sans-serif" fontSize={7} letterSpacing="0.15em" fill="var(--color-clay)">
         OVERALL
       </text>
 
@@ -71,7 +74,7 @@ export function RadarChart({ dimensions, overall, tierColor }: RadarChartProps) 
         const anchor = x > cx + 6 ? "start" : x < cx - 6 ? "end" : "middle";
         return (
           <g key={i}>
-            <text x={x} y={y} textAnchor={anchor} fontFamily="var(--font-inter), sans-serif" fontSize={11} fontWeight={500} fill="#23201b">
+            <text x={x} y={y} textAnchor={anchor} fontFamily="var(--font-inter), sans-serif" fontSize={11} fontWeight={500} fill="var(--color-ink)">
               {d.label}
             </text>
             <text x={x} y={y + 13} textAnchor={anchor} fontFamily="var(--font-cormorant), serif" fontSize={12} fontWeight={600} fill={d.color}>

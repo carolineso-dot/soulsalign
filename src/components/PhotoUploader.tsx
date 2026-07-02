@@ -88,7 +88,7 @@ export function PhotoUploader({ photos }: { photos: EditablePhoto[] }) {
               className="w-full"
             />
             {p.isPrimary && (
-              <span className="absolute left-1.5 top-1.5 rounded-full bg-claret px-2 py-0.5 text-[0.55rem] font-medium uppercase tracking-wider text-ivory">
+              <span className="absolute left-1.5 top-1.5 rounded-full bg-claret px-2 py-0.5 text-[0.55rem] font-medium uppercase tracking-wider text-on-accent">
                 Main
               </span>
             )}
@@ -123,7 +123,7 @@ export function PhotoUploader({ photos }: { photos: EditablePhoto[] }) {
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading || pending}
-          className="flex flex-col items-center justify-center gap-1 rounded-[1.25rem] border border-dashed border-hairline bg-white/40 text-clay"
+          className="flex flex-col items-center justify-center gap-1 rounded-[1.25rem] border border-dashed border-hairline veil text-clay"
           style={{ aspectRatio: "4 / 5" }}
         >
           {uploading ? (

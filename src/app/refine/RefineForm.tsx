@@ -47,7 +47,7 @@ export function RefineForm({ homeLocation }: { homeLocation: string | null }) {
       </section>
 
       {/* Location + proximity */}
-      <section className="space-y-4 rounded-2xl border border-hairline bg-white/40 p-4">
+      <section className="space-y-4 rounded-2xl border border-hairline veil p-4">
         <div className="space-y-2">
           <span className="label-eyebrow block">Location</span>
           <input

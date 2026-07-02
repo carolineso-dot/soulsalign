@@ -35,12 +35,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fbf9f5",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fbf9f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#14101c" },
+  ],
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
 };
+
+// Applies the saved/system theme before paint to avoid a flash of the wrong theme.
+const themeInit = `(function(){try{var t=localStorage.getItem('sa-theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -51,7 +57,11 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${cormorant.variable} ${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      </head>
       <body className="relative min-h-full">
         <AmbientBackdrop />
         <div className="relative z-10 min-h-full">{children}</div>

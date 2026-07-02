@@ -101,7 +101,7 @@ export function EditForm({
         </section>
 
         {/* Birth details — locked after verification */}
-        <section className="space-y-3 rounded-2xl border border-hairline bg-white/40 p-4">
+        <section className="space-y-3 rounded-2xl border border-hairline veil p-4">
           <div className="flex items-center justify-between">
             <p className="label-eyebrow">Birth details</p>
             {initial.birthLocked && (

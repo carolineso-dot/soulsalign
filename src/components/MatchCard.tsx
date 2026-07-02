@@ -57,7 +57,7 @@ export function MatchCard({ data }: { data: MatchCardData }) {
         {data.locked && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-ink/25 text-center">
             <LockGlyph />
-            <p className="font-serif text-lg text-ivory drop-shadow">
+            <p className="font-serif text-lg text-on-accent drop-shadow">
               A Destined match awaits
             </p>
             <span className="rounded-full bg-gold px-4 py-1.5 text-xs font-medium text-ink">

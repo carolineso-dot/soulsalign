@@ -43,7 +43,7 @@ export default function MethodPage() {
 
       <div className="mt-10 space-y-px overflow-hidden rounded-2xl border border-hairline">
         {SIGNALS.map((s) => (
-          <section key={s.no} className="bg-white/40 p-5">
+          <section key={s.no} className="veil p-5">
             <div className="flex items-baseline gap-3">
               <span className="font-serif text-lg text-gold">{s.no}</span>
               <div>

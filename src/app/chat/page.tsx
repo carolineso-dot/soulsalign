@@ -56,7 +56,7 @@ export default async function ChatListPage() {
             <ul className={`${requests.length > 0 ? "mt-3" : ""} space-y-px overflow-hidden rounded-2xl border border-hairline`}>
               {active.map((c) => (
                 <li key={c.id}>
-                  <Link href={`/chat/${c.id}`} className="flex items-center gap-3 bg-white/50 px-4 py-3">
+                  <Link href={`/chat/${c.id}`} className="flex items-center gap-3 veil px-4 py-3">
                     <ProfileImage src={c.photoUrl} name={c.name} crop={parseCrop(c.photoCrop)} shape="circle" size={52} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">

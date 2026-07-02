@@ -3,23 +3,46 @@
 /* ------------------------------------------------------------------ */
 /*  Souls Align — design tokens                                        */
 /*  Editorial, luxury, restrained. Never bubbly.                       */
+/*                                                                     */
+/*  Colour tokens are SEMANTIC and theme-aware: surface/text/border    */
+/*  flip between the daylight (ivory) and nocturnal (night-sky)        */
+/*  themes via the `.dark` overrides below. Brand accents (claret,     */
+/*  gold, tiers) stay constant. `on-accent` / `on-light` are fixed     */
+/*  foregrounds for text sitting on coloured accents.                  */
 /* ------------------------------------------------------------------ */
 
 @theme {
-  /* Brand palette */
+  /* Semantic surfaces & text (light defaults) */
   --color-ivory: #fbf9f5; /* primary surface */
   --color-grad-from: #efe9e0; /* page gradient start */
   --color-grad-to: #e9e3f0; /* page gradient end */
   --color-ink: #23201b; /* primary text */
-  --color-clay: #8c857a; /* muted labels */
+  --color-clay: #8c857a; /* muted text/labels */
+  --color-hairline: #e7e0d4; /* borders */
+  --color-raised: #ffffff; /* raised surface base (used with mix) */
+
+  /* Brand accents (constant across themes) */
   --color-claret: #7e3340; /* primary accent / romance / Kindred */
   --color-claret-soft: #a45562;
   --color-gold: #a8843b; /* Destined tier + glowing core */
   --color-gold-soft: #c9a85f;
-  --color-hairline: #e7e0d4; /* borders */
   --color-aubergine: #2f2535; /* icon tile */
   --color-slate: #4e4a63; /* Attuned tier */
   --color-sage: #5f7268; /* Spark tier */
+
+  /* Fixed foregrounds on coloured accents */
+  --color-on-accent: #fbf9f5; /* light text on claret/dark accents */
+  --color-on-light: #23201b; /* dark text on gold/light accents */
+
+  /* Raised-surface veils (theme-aware alpha tints) */
+  --veil: rgba(255, 255, 255, 0.55);
+  --veil-strong: rgba(255, 255, 255, 0.78);
+
+  /* Elevation shadows (theme-aware) */
+  --shadow-card:
+    0 1px 2px rgba(35, 32, 27, 0.03), 0 14px 34px -22px rgba(35, 32, 27, 0.2);
+  --shadow-lift:
+    0 2px 6px rgba(35, 32, 27, 0.05), 0 24px 48px -24px rgba(35, 32, 27, 0.28);
 
   /* Typography */
   --font-serif: var(--font-cormorant), "EB Garamond", Georgia, serif;
@@ -28,6 +51,34 @@
   /* Radii */
   --radius-card: 1.25rem;
   --radius-tile: 1.5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Nocturnal "night sky" theme                                        */
+/* ------------------------------------------------------------------ */
+
+:root.dark {
+  --color-ivory: #14101c; /* deep night surface */
+  --color-grad-from: #191325;
+  --color-grad-to: #241a34;
+  --color-ink: #f2ede3; /* warm ivory text */
+  --color-clay: #a99e92; /* muted, readable on dark */
+  --color-hairline: #352c47; /* subtle nocturnal border */
+  --color-raised: #221a32; /* elevated dark surface */
+
+  /* Brand accents brighten slightly for dark backgrounds */
+  --color-claret: #b1546a;
+  --color-claret-soft: #c56d82;
+  --color-gold: #c9a85f;
+  --color-gold-soft: #e0c684;
+
+  --veil: rgba(255, 255, 255, 0.05);
+  --veil-strong: rgba(255, 255, 255, 0.08);
+
+  --shadow-card:
+    0 1px 2px rgba(0, 0, 0, 0.3), 0 18px 40px -22px rgba(0, 0, 0, 0.6);
+  --shadow-lift:
+    0 2px 8px rgba(0, 0, 0, 0.35), 0 28px 56px -24px rgba(0, 0, 0, 0.7);
 }
 
 /* ------------------------------------------------------------------ */
@@ -52,6 +103,61 @@ body {
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
+
+/* Subtle paper-grain / starfield texture over the surface (very low opacity) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.dark body::before {
+  opacity: 0.05;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Typography scale                                                   */
+/* ------------------------------------------------------------------ */
+
+.font-serif {
+  font-family: var(--font-serif);
+  letter-spacing: -0.005em;
+}
+
+/* Display + headings: tighter leading, optical tracking for Cormorant */
+.text-display {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 9vw, 3.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+.text-h1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.9rem;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+.text-h2 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.4rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+/* Lining, tabular figures for scores so digits align crisply */
+.tnum {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
 /* Section labels: uppercase, letter-spaced, muted clay */
@@ -72,18 +178,56 @@ body {
   font-weight: 500;
 }
 
-.font-serif {
-  font-family: var(--font-serif);
+/* ------------------------------------------------------------------ */
+/*  Foreground + surface helpers                                       */
+/* ------------------------------------------------------------------ */
+
+/* Theme-conditional visibility (used by the theme toggle) */
+.theme-when-dark {
+  display: none;
+}
+:root.dark .theme-when-dark {
+  display: inline-flex;
+}
+:root.dark .theme-when-light {
+  display: none;
+}
+
+.text-on-accent {
+  color: var(--color-on-accent);
+}
+.text-on-light {
+  color: var(--color-on-light);
+}
+
+/* Theme-aware raised veils (replace bg-white/xx so dark mode stays correct) */
+.veil {
+  background-color: var(--veil);
+}
+.veil-strong {
+  background-color: var(--veil-strong);
 }
 
 /* Cards */
 .card {
-  background: color-mix(in srgb, var(--color-ivory) 92%, white);
+  background: var(--color-raised);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-card);
-  box-shadow:
-    0 1px 2px rgba(35, 32, 27, 0.03),
-    0 12px 32px -20px rgba(35, 32, 27, 0.18);
+  box-shadow: var(--shadow-card);
+}
+/* Gentle lift on pointer devices */
+@media (hover: hover) {
+  a > .card,
+  .card-hover {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  a:hover > .card,
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
 }
 
 /* Buttons */
@@ -96,13 +240,14 @@ body {
   font-weight: 500;
   letter-spacing: 0.01em;
   transition:
-    transform 0.18s ease,
+    transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1),
     opacity 0.18s ease,
-    background-color 0.18s ease;
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
   cursor: pointer;
 }
 .btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 .btn:disabled {
   opacity: 0.5;
@@ -110,14 +255,15 @@ body {
 }
 .btn-primary {
   background: var(--color-claret);
-  color: var(--color-ivory);
+  color: var(--color-on-accent);
 }
 .btn-primary:hover:not(:disabled) {
   background: color-mix(in srgb, var(--color-claret) 88%, black);
+  box-shadow: 0 8px 24px -12px var(--color-claret);
 }
 .btn-gold {
   background: var(--color-gold);
-  color: var(--color-ink);
+  color: var(--color-on-light);
 }
 .btn-ghost {
   background: transparent;
@@ -125,13 +271,13 @@ body {
   border: 1px solid var(--color-hairline);
 }
 .btn-ghost:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-ivory) 50%, white);
+  background: var(--veil);
 }
 
 /* Inputs */
 .field {
   width: 100%;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--veil);
   border: 1px solid var(--color-hairline);
   border-radius: 0.75rem;
   padding: 0.7rem 0.9rem;
@@ -150,66 +296,74 @@ body {
   color: color-mix(in srgb, var(--color-clay) 80%, transparent);
 }
 
+/* Accessible keyboard focus ring everywhere */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-claret) 40%, transparent);
+  border-radius: 6px;
+}
+
 /* ------------------------------------------------------------------ */
-/*  Orbit motif animations                                            */
+/*  Motion                                                             */
 /* ------------------------------------------------------------------ */
 
 @keyframes orbit-cw {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 @keyframes orbit-ccw {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
 }
 @keyframes core-pulse {
-  0%,
-  100% {
-    opacity: 0.85;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.08);
-  }
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
 }
 @keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 0.7;
-  }
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.7; }
 }
 @keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  from { background-position: -150% 0; }
+  to { background-position: 250% 0; }
+}
+@keyframes draw {
+  from { stroke-dashoffset: var(--dash, 600); }
+  to { stroke-dashoffset: 0; }
 }
 
 .animate-fade-up {
-  animation: fade-up 0.6s ease both;
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered entrance for lists/grids (set --i on children) */
+.stagger > * {
+  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* Gold shimmer sweep — used to reveal a score/tier */
+.shimmer-gold {
+  background-image: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in srgb, var(--color-gold) 55%, transparent) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.4s ease-in-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .orbit-spin-cw,
-  .orbit-spin-ccw,
-  .orbit-core,
-  .orbit-star {
-    animation: none !important;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

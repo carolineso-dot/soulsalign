@@ -25,7 +25,7 @@ export function TestChatButton({ targetId }: { targetId: string }) {
       onClick={onClick}
       disabled={pending}
       className="btn w-full border border-dashed px-6 py-3 text-sm"
-      style={{ borderColor: "#8c857a", color: "#8c857a", background: "transparent" }}
+      style={{ borderColor: "var(--color-clay)", color: "var(--color-clay)", background: "transparent" }}
     >
       {pending ? "Matching…" : "⚙ Test chat (dev only)"}
     </button>

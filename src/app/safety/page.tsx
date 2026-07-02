@@ -31,7 +31,7 @@ export default function SafetyCentre() {
         />
       </div>
 
-      <section className="mt-8 space-y-3 rounded-2xl border border-hairline bg-white/40 p-5">
+      <section className="mt-8 space-y-3 rounded-2xl border border-hairline veil p-5">
         <h2 className="font-serif text-xl text-ink">A few quiet principles</h2>
         <ul className="space-y-2 text-sm leading-relaxed text-clay">
           <li>Meet in public the first few times, and tell a friend where you&rsquo;ll be.</li>
@@ -61,7 +61,7 @@ function Card({ title, body, href, cta }: { title: string; body: string; href: s
 function BackLink() {
   return (
     <Link href="/you" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline bg-ivory/70">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#23201b" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M15 18l-6-6 6-6" />
       </svg>
     </Link>

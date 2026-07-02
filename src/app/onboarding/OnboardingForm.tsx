@@ -130,7 +130,7 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
       </section>
 
       {/* Consent */}
-      <section className="space-y-3 rounded-2xl border border-hairline bg-white/40 p-4">
+      <section className="space-y-3 rounded-2xl border border-hairline veil p-4">
         <label className="flex items-start gap-3 text-sm text-ink">
           <input type="checkbox" name="consent18" value="yes" className="mt-1" />
           <span>I confirm I am 18 years of age or older.</span>

@@ -63,7 +63,7 @@ export function VerifyFlow({ alreadyVerified }: { alreadyVerified: boolean }) {
         </p>
       </div>
 
-      <div className="w-full max-w-xs rounded-2xl border border-hairline bg-white/40 p-4 text-left text-xs leading-relaxed text-clay">
+      <div className="w-full max-w-xs rounded-2xl border border-hairline veil p-4 text-left text-xs leading-relaxed text-clay">
         Once verified, your birth details lock permanently. They anchor every
         alignment, so make sure they&rsquo;re right before you continue.
       </div>

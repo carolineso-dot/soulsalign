@@ -23,11 +23,11 @@ export function PillSelect({ name, options, value, onChange }: PillSelectProps) 
             onClick={() => onChange(o.value)}
             className="rounded-full border px-4 py-2 text-sm transition-colors"
             style={{
-              borderColor: active ? "#7e3340" : "#e7e0d4",
+              borderColor: active ? "#7e3340" : "var(--color-hairline)",
               backgroundColor: active
                 ? "color-mix(in srgb, #7e3340 10%, transparent)"
                 : "transparent",
-              color: active ? "#7e3340" : "#23201b",
+              color: active ? "#7e3340" : "var(--color-ink)",
               fontWeight: active ? 500 : 400,
             }}
           >

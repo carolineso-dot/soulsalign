@@ -64,7 +64,7 @@ export function ChatRequests({ requests }: { requests: RequestItem[] }) {
                   {r.essence ?? "Would like to connect with you."}
                 </p>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8c857a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-clay)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 6l6 6-6 6" />
               </svg>
             </Link>

@@ -82,7 +82,7 @@ export default async function DiscoverPage({
       </header>
 
       {hasFilters && (
-        <div className="mt-4 flex items-center justify-between rounded-lg border border-hairline bg-white/40 px-3 py-2 text-xs text-clay">
+        <div className="mt-4 flex items-center justify-between rounded-lg border border-hairline veil px-3 py-2 text-xs text-clay">
           <span>Refined view active</span>
           <a href="/discover" className="text-claret underline underline-offset-2">
             Clear
@@ -97,9 +97,11 @@ export default async function DiscoverPage({
         </p>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-5">
-        {matches.map((m) => (
-          <MatchCard key={m.id} data={m} />
+      <div className="stagger mt-6 grid grid-cols-1 gap-5">
+        {matches.map((m, i) => (
+          <div key={m.id} style={{ ["--i" as string]: i }}>
+            <MatchCard data={m} />
+          </div>
         ))}
       </div>
 

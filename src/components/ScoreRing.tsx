@@ -33,7 +33,7 @@ export function ScoreRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#e7e0d4"
+          stroke="var(--color-hairline)"
           strokeWidth={stroke}
         />
         <circle
@@ -49,7 +49,7 @@ export function ScoreRing({
       </svg>
       {!hideValue && (
         <span
-          className="absolute font-serif font-semibold"
+          className="tnum absolute font-serif font-semibold"
           style={{ color: tier.color, fontSize: size * 0.32 }}
         >
           {Math.round(score)}

@@ -42,7 +42,7 @@ function Fallback({
       style={{ background: GRADIENT }}
     >
       <span
-        className="font-serif font-medium text-ivory"
+        className="font-serif font-medium text-on-accent"
         style={{ fontSize, letterSpacing: "0.04em" }}
       >
         {initial}

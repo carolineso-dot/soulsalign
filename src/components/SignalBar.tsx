@@ -18,7 +18,7 @@ export function SignalBar({
     <div className="space-y-1.5">
       <div className="flex items-baseline justify-between gap-3">
         <span className="text-sm font-medium text-ink">{label}</span>
-        <span className="font-serif text-sm font-semibold" style={{ color }}>
+        <span className="tnum font-serif text-sm font-semibold" style={{ color }}>
           {Math.round(score)}
         </span>
       </div>
