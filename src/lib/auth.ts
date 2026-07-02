@@ -70,7 +70,7 @@ export async function getCurrentUser() {
   if (!id) return null;
   return prisma.user.findUnique({
     where: { id },
-    include: { photos: { orderBy: { sort: "asc" } } },
+    include: { photos: { orderBy: [{ isPrimary: "desc" }, { sort: "asc" }] } },
   });
 }
 

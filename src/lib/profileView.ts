@@ -61,7 +61,7 @@ export async function getProfileView(
 
   const target = await prisma.user.findUnique({
     where: { id: targetId },
-    include: { photos: { orderBy: { sort: "asc" } } },
+    include: { photos: { orderBy: [{ isPrimary: "desc" }, { sort: "asc" }] } },
   });
   if (!target || !target.onboardingComplete) return null;
 

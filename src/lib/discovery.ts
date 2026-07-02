@@ -107,7 +107,9 @@ export async function getCuratedMatches(
       id: { notIn: Array.from(excluded) },
       incognito: false,
     },
-    include: { photos: { orderBy: { sort: "asc" }, take: 1 } },
+    include: {
+      photos: { orderBy: [{ isPrimary: "desc" }, { sort: "asc" }], take: 1 },
+    },
   });
 
   const cards: MatchCard[] = [];
