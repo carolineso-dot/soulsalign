@@ -64,7 +64,7 @@ export function ReportDialog({
       )}
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-aubergine/50 p-4 sm:items-center">
           <div className="card w-full max-w-sm p-5">
             {done ? (
               <div className="space-y-4 text-center">
