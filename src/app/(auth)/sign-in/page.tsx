@@ -34,7 +34,7 @@ export default function SignInPage() {
             Ask us to reset it
           </a>
         ) : (
-          <span>Contact the Souls Align team and we&rsquo;ll reset it for you.</span>
+          <span>Contact the app owner to reset your password.</span>
         )}
       </p>
     </main>
