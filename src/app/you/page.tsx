@@ -25,6 +25,9 @@ export default async function YouPage() {
   const interests = parseInterests(user.interests);
   const age = user.dob ? ageFromDob(user.dob) : null;
   const primary = user.photos.find((p) => p.isPrimary) ?? user.photos[0];
+  // The primary is shown as the hero above; exclude it from the grid below so
+  // it isn't rendered twice. (Ordering logic elsewhere is unchanged.)
+  const gallery = user.photos.filter((p) => p.id !== primary?.id);
   const plan = planByKey(user.plan);
 
   return (
@@ -79,10 +82,10 @@ export default async function YouPage() {
         </div>
       </div>
 
-      {/* photo grid */}
-      {user.photos.length > 0 && (
+      {/* photo grid — additional photos only (hero excluded) */}
+      {gallery.length > 0 && (
         <div className="mt-5 grid grid-cols-3 gap-3">
-          {user.photos.map((p) => (
+          {gallery.map((p) => (
             <ProfileImage
               key={p.id}
               src={p.url}

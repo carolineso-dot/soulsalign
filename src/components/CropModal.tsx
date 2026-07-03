@@ -48,10 +48,10 @@ export function CropModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex flex-col bg-ink/80 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[60] flex flex-col bg-aubergine/90 backdrop-blur-sm">
       <div className="mx-auto flex h-full w-full max-w-md flex-col">
         <header className="flex items-center justify-between px-5 py-4">
-          <button onClick={onCancel} className="text-sm text-on-accent/80">
+          <button onClick={onCancel} className="text-sm font-medium text-on-accent">
             Cancel
           </button>
           <span className="font-serif text-lg text-on-accent">{title}</span>
