@@ -77,8 +77,8 @@ export function ChatThread({
 
   return (
     <div className="mx-auto flex h-dvh max-w-md flex-col">
-      {/* header */}
-      <header className="flex items-center gap-3 border-b border-hairline bg-ivory/85 px-4 py-3 backdrop-blur">
+      {/* header — pinned while messages scroll underneath */}
+      <header className="sticky top-0 z-20 flex shrink-0 items-center gap-3 border-b border-hairline bg-ivory/85 px-4 py-3 backdrop-blur">
         <Link href="/chat" aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full border border-hairline bg-ivory/70">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6" />
@@ -97,7 +97,7 @@ export function ChatThread({
       </header>
 
       {/* messages */}
-      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-5">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-5">
         <p className="text-center text-xs text-clay">
           {declined
             ? "This conversation is closed."
@@ -129,7 +129,7 @@ export function ChatThread({
       </div>
 
       {/* composer / status */}
-      <div className="border-t border-hairline bg-ivory/90 px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-hairline bg-ivory/90 px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
         {declined ? (
           <p className="px-2 py-2 text-center text-sm text-clay">
             <span className="font-medium text-claret">{otherName} declined</span> your

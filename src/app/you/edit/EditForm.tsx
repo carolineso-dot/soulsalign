@@ -11,6 +11,13 @@ import {
 import { cityOptions } from "@/lib/geo";
 import { updateProfile, EditState } from "../actions";
 
+const HEIGHT_MIN = 140;
+const HEIGHT_MAX = 210; // cm
+const HEIGHT_RANGE = Array.from(
+  { length: HEIGHT_MAX - HEIGHT_MIN + 1 },
+  (_, i) => HEIGHT_MIN + i,
+);
+
 type Initial = {
   name: string;
   essence: string;
@@ -43,6 +50,14 @@ export function EditForm({
   const [interestedIn, setInterestedIn] = useState(initial.interestedIn || "everyone");
   const [connection, setConnection] = useState(initial.connection || "both");
 
+  // Ensure an existing stored height stays selectable even if it's outside the
+  // 140–210 range, so no one's saved height is silently dropped on save.
+  const storedHeight = initial.height ? Number(initial.height) : null;
+  const heightOptions =
+    storedHeight && !HEIGHT_RANGE.includes(storedHeight)
+      ? [...HEIGHT_RANGE, storedHeight].sort((a, b) => a - b)
+      : HEIGHT_RANGE;
+
   return (
     <div className="space-y-10">
       {/* photos — managed independently of the text form */}
@@ -74,7 +89,14 @@ export function EditForm({
 
         <section className="space-y-2">
           <label htmlFor="height" className="label-eyebrow block">Height · cm</label>
-          <input id="height" name="height" type="number" min={120} max={230} defaultValue={initial.height} className="field" />
+          <select id="height" name="height" defaultValue={initial.height} className="field">
+            <option value="">Prefer not to say</option>
+            {heightOptions.map((cm) => (
+              <option key={cm} value={cm}>
+                {cm} cm
+              </option>
+            ))}
+          </select>
         </section>
 
         <section className="space-y-2">
