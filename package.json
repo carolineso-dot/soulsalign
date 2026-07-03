@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "prisma migrate reset --force"
+    "db:reset": "prisma migrate reset --force",
+    "set-password": "tsx scripts/set-password.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -23,6 +23,22 @@ export default function SignInPage() {
       <div className="mt-8">
         <AuthForm mode="sign-in" action={signInAction} />
       </div>
+
+      <p className="mt-6 text-center text-xs leading-relaxed text-clay">
+        Forgot your password?{" "}
+        {supportEmail ? (
+          <a
+            href={`mailto:${supportEmail}?subject=Souls%20Align%20password%20reset`}
+            className="text-claret underline underline-offset-4"
+          >
+            Ask us to reset it
+          </a>
+        ) : (
+          <span>Contact the Souls Align team and we&rsquo;ll reset it for you.</span>
+        )}
+      </p>
     </main>
   );
 }
+
+const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL;
