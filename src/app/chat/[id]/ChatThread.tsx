@@ -76,9 +76,11 @@ export function ChatThread({
   };
 
   return (
-    <div className="mx-auto flex h-dvh max-w-md flex-col">
-      {/* header — pinned while messages scroll underneath */}
-      <header className="sticky top-0 z-20 flex shrink-0 items-center gap-3 border-b border-hairline bg-ivory/85 px-4 py-3 backdrop-blur">
+    // Fixed to the viewport so the page itself never scrolls — only the
+    // messages area does, keeping the header (name) frozen at the top.
+    <div className="fixed inset-0 z-40 mx-auto flex max-w-md flex-col">
+      {/* header — frozen at the top while messages scroll underneath */}
+      <header className="flex shrink-0 items-center gap-3 border-b border-hairline bg-ivory/85 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur">
         <Link href="/chat" aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full border border-hairline bg-ivory/70">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6" />
@@ -97,7 +99,7 @@ export function ChatThread({
       </header>
 
       {/* messages */}
-      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-5">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-5">
         <p className="text-center text-xs text-clay">
           {declined
             ? "This conversation is closed."
